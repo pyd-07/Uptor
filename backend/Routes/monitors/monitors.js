@@ -124,7 +124,7 @@ router.get('/:id/checks', auth, async (req, res) => {
             return res.status(404).json({ message: "Monitor not found" })
         }
         const checks = await MonitorCheck.find({ monitorId: id })
-            .sort({createdAt:-1})
+            .sort({checked_at:-1})
             .limit(limit)
             .select("status response_time_ms status_code checked_at");
     

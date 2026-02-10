@@ -1,4 +1,4 @@
-const pLimit = require('p-limit');
+const pLimit = require('p-limit').default;
 const connectDB = require('../db');
 const { Alert } = require('../backend/Models/Alert')
 const {Monitor} = require('../backend/Models/Monitor')
@@ -9,7 +9,7 @@ async function getpendingAlerts() {
 }
 
 let running = false;
-const limit = pLimit(20);
+const limit = pLimit(20).default;
 
 function startWorker() {
   setInterval(async () => {
@@ -66,7 +66,12 @@ function startWorker() {
   }, 10_000);
 }
 
-connectDB().then(startWorker).catch((err) => {
-  console.error("Alert worker failed to connect to DB:", err);
-  process.exit(1);
-});
+connectDB()
+.then(() => {
+    console.log("Alert worker connected to DB")
+    startWorker()
+})
+.catch((err) => {
+    console.error("Alert worker failed to connect to DB:", err)
+    process.exit(1)
+})
