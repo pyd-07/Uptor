@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="be9fc094-232f-4568-9a79-609d9281ba04" name="Changes" comment="" />
+    <list default="true" id="be9fc094-232f-4568-9a79-609d9281ba04" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/apps/web/middleware.ts" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,9 +29,9 @@
     <commands />
     <urls />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="3948QhJeEoQaf11f7dKWOVNxkhX" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -57,7 +59,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "to.speed.mode.migration.done": "true",
-    "ts.external.directory.path": "/home/piyush/MyFolder2/Uptor/uptor/node_modules/typescript/lib",
+    "ts.external.directory.path": "/home/piyush/MyFolder2/Uptor/apps/web/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -67,6 +69,11 @@
         <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.30387.83" />
       </set>
     </attachedChunks>
+  </component>
+  <component name="TamaCatBrowser">
+    <tabPlacements>
+      <tabPlacement position="BOTTOM_LEFT" url="tamacat://home" />
+    </tabPlacements>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

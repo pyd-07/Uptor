@@ -1,0 +1,77 @@
+const pLimit = require('p-limit').default;
+const connectDB = require('../../db');
+const { Alert } = require('../api/Models/Alert')
+const {Monitor} = require('../api/Models/Monitor')
+const notifyMail = require('../services/alertService')
+
+async function getpendingAlerts() {
+    return await Alert.find({status:"pending", tries: {$lt:3}});
+}
+
+let running = false;
+const limit = pLimit(20).default;
+
+function startWorker() {
+  setInterval(async () => {
+    if(running) return;
+    running = true;
+
+    try {
+        const pendingAlerts = await getpendingAlerts();
+
+        const tasks = pendingAlerts
+            .map((alert)=>
+                limit(async () => {
+                    const claimed = await Alert.findOneAndUpdate(
+                        {_id:alert._id, status:"pending"},
+                        {status:"processing"},
+                        {new: true}
+                    )
+                    if(!claimed) return;
+                    try {
+                        const monitor = await Monitor.findById(alert.monitorId)
+                        if (!monitor) {
+                            await Alert.findByIdAndUpdate(alert._id, {
+                            status: "failed",
+                            $inc: { tries: 1 },
+                            });
+                            return;
+                        }
+                        const res = await notifyMail(alert.type, monitor)
+                        const updated = await Alert.findByIdAndUpdate(alert._id,{
+                            status: res?"sent":"pending",
+                            $inc: {tries:1}
+                            }, 
+                            {new:true}
+                        )
+                        if(updated.status!=="sent" && updated.tries>=3)
+                            await Alert.findByIdAndUpdate(alert._id, {status: "failed"})
+                    } catch (error) {
+                        const updated = await Alert.findByIdAndUpdate(alert._id,{
+                            status:"pending",
+                            $inc: {tries:1}
+                            }, 
+                            {new: true}
+                        );
+                        if(updated.tries>=3)
+                            await Alert.findByIdAndUpdate(alert._id, {status:"failed"})
+                    }
+                })
+            )
+            await Promise.all(tasks);
+    } finally {
+        running = false;
+    }
+
+  }, 10_000);
+}
+
+connectDB()
+.then(() => {
+    console.log("Alert worker connected to DB")
+    startWorker()
+})
+.catch((err) => {
+    console.error("Alert worker failed to connect to DB:", err)
+    process.exit(1)
+})
