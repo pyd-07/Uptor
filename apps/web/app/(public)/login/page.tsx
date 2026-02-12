@@ -1,4 +1,6 @@
-import React from 'react'
+"use client"
+
+import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -13,6 +15,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image";
 import Link from "next/link";
+import { api } from '@/lib/api';
+import { useRouter } from 'next/navigation'
 
 export default function Page() {
     return (
@@ -41,6 +45,38 @@ function OAuthButton({ label, href }: { label: string; href?: string }) {
 export function CardDemo() {
     const googleOAuthUrl = process.env.NEXT_PUBLIC_GOOGLE_OAUTH_URL;
     const githubOAuthUrl = process.env.NEXT_PUBLIC_GITHUB_OAUTH_URL;
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("")
+
+    const router = useRouter()
+
+
+    const handleSubmit = async (e: React.FormEvent)=>{
+        e.preventDefault()
+        setLoading(true)
+        
+        try{
+            const res = await api.post(
+                "/auth/login",
+                {
+                    email,
+                    password
+                }
+            )
+            router.push("/dashboard")
+        } catch (err: any){
+            if(err.response){
+                setError(err.response.data.message)
+            } else {
+                setError("Something went wrong.")
+            }
+            console.error(error)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <Card className="w-full max-w-sm bg-slate-950 opacity-90 text-white rounded-3xl">
@@ -61,8 +97,8 @@ export function CardDemo() {
                     </Button>
                 </CardAction>
             </CardHeader>
-            <CardContent>
-                <form>
+            <form onSubmit={handleSubmit}>
+                <CardContent>
                     <div className="flex flex-col gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
@@ -71,6 +107,8 @@ export function CardDemo() {
                                 type="email"
                                 placeholder="Enter your email"
                                 required
+                                value={email}
+                                onChange={(e)=>setEmail(e.target.value)}
                             />
                         </div>
                         <div className="grid gap-2">
@@ -83,19 +121,33 @@ export function CardDemo() {
                                     Forgot your password?
                                 </a>
                             </div>
-                            <Input id="password" type="password" placeholder="Enter your password" required/>
+                            <Input
+                                id="password"
+                                type="password" 
+                                placeholder="Enter your password" 
+                                required
+                                value={password}
+                                onChange={(e)=>setPassword(e.target.value)}
+                            />
                         </div>
                     </div>
-                </form>
-            </CardContent>
-            <CardFooter className="flex-col gap-2">
-                <Button type="submit" className="w-full hover:bg-slate-700">
-                    Log In
-                </Button>
-                <div className="text-xs text-muted-foreground mt-2">Or continue with</div>
-                <OAuthButton label="Log In with Google" href={googleOAuthUrl} />
-                <OAuthButton label="Log In with GitHub" href={githubOAuthUrl} />
-            </CardFooter>
+                </CardContent>
+                <CardFooter className="flex-col gap-2 pt-5">
+                    {error && (
+                        <div className="text-red-500 text-sm mb-2">
+                            {error}
+                        </div>
+                        )
+                    }
+                    <Button type="submit" className="w-full hover:bg-slate-700">
+                        Log In
+                    </Button>
+                    
+                    <div className="text-xs text-muted-foreground mt-2">Or continue with</div>
+                    <OAuthButton label="Log In with Google" href={googleOAuthUrl} />
+                    <OAuthButton label="Log In with GitHub" href={githubOAuthUrl} />
+                </CardFooter>
+            </form>
         </Card>
     )
 }
