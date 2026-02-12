@@ -49,8 +49,38 @@ router.post('/',auth, async (req, res) => {
 router.get('/', auth, async (req,res) => {
     const org_id = req.org_id
     try {
+
         const monitors = await Monitor.find({ organizationId: org_id })
-        return res.status(200).json(monitors)
+
+        const totalMonitors = monitors.length;
+        const upMonitors = monitors.filter((monitor)=> monitor.last_status==="up" && monitor.is_active).length
+        const downMonitors = monitors.filter((monitor)=> monitor.last_status==="down" && monitor.is_active).length
+        const valid_latencies = monitors.filter(m => m.response_time_ms != null)
+        const avg_latency = valid_latencies.length > 0
+        ? valid_latencies.reduce((sum, m) => sum + m.responseTime, 0)/valid_latencies.length
+        : 0;
+
+        const stats = {
+            total: totalMonitors,
+            up: upMonitors,
+            down: downMonitors,
+            avg_latency: avg_latency
+        }
+        const formatted = monitors.map(m => ({
+            id: m._id,
+            name: m.name,
+            url: m.url,
+            status: m.last_status,
+            responseTime: m.response_time_ms,
+            interval: `${m.interval_sec / 60} min`,
+            lastChecked: m.last_checked_at,
+            is_active: m.is_active
+        }));
+
+        return res.status(200).json({
+            stats: stats,
+            monitors:monitors
+        })
     } catch (error) {
         return res.status(500).json({
             error:`${error}`

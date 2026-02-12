@@ -1,132 +1,58 @@
-import React from 'react'
+"use client"
+
+import React, {useEffect, useState} from 'react'
 import Image from "next/image";
 import MonitorStatusGrid from "@/components/layout/monitors/MonitorStatusGrid";
 import {MonitorsTable} from "@/components/layout/monitors/MonitorsTable";
+import {api} from "@/lib/api";
 
-// Fetching Monitors
+type Monitor = {
+    id: string;
+    name: string;
+    url: string;
+    status: string;
+    responseTime: number | null;
+    interval: string;
+    lastChecked: string;
+    is_active: boolean;
+}
 
-const monitors= [
-    {
-        id: '1',
-        name: 'Main Website',
-        url: 'https://uptor.com',
-        status: 'up',
-        lastChecked: '2 min ago',
-        responseTime: 124,
-        interval: '1 min',
-        is_active: true
-    },
-    {
-        id: '2',
-        name: 'API Gateway',
-        url: 'https://api.uptor.com',
-        status: 'up',
-        lastChecked: '1 min ago',
-        responseTime: 89,
-        interval: '1 min',
-        is_active: false
-    },
-    {
-        id: '3',
-        name: 'Payment Service',
-        url: 'https://payments.uptor.com/health',
-        status: 'down',
-        lastChecked: '30 sec ago',
-        responseTime: null,
-        interval: '30 sec',
-        is_active: true
-    },
-    {
-        id: '4',
-        name: 'Auth Service',
-        url: 'https://auth.uptor.com',
-        status: 'up',
-        lastChecked: '1 min ago',
-        responseTime: 156,
-        interval: '1 min',
-        is_active: true
-    },
-    {
-        id: '5',
-        name: 'CDN Edge Node',
-        url: 'https://cdn.uptor.com',
-        status: 'up',
-        lastChecked: '45 sec ago',
-        responseTime: 67,
-        interval: '1 min',
-        is_active: true
-    },
-    {
-        id: '6',
-        name: 'Database Health',
-        url: 'https://db.uptor.com/ping',
-        status: 'up',
-        lastChecked: '2 min ago',
-        responseTime: 203,
-        interval: '2 min',
-        is_active: false
-    },
-    {
-        id: '7',
-        name: 'Email Service',
-        url: 'https://mail.uptor.com/status',
-        status: 'paused',
-        lastChecked: '1 hour ago',
-        responseTime: null,
-        interval: '5 min',
-        is_active: true
-    },
-    {
-        id: '8',
-        name: 'Analytics Dashboard',
-        url: 'https://analytics.uptor.com',
-        status: 'up',
-        lastChecked: '3 min ago',
-        responseTime: 289,
-        interval: '5 min',
-        is_active: false
-    },
-    {
-        id: '9',
-        name: 'Webhooks Processor',
-        url: 'https://webhooks.uptor.com',
-        status: 'down',
-        lastChecked: '1 min ago',
-        responseTime: null,
-        interval: '1 min',
-        is_active: true
-    },
-    {
-        id: '10',
-        name: 'Status Page',
-        url: 'https://status.uptor.com',
-        status: 'up',
-        lastChecked: '4 min ago',
-        responseTime: 178,
-        interval: '2 min',
-        is_active: false
-    }
-];
-// --- end
-
-const valid_latencies = monitors.filter((m) => typeof m.responseTime === "number");
-
-const avg_latency = valid_latencies.length > 0
-    ? valid_latencies.reduce((sum, m) => sum + m.responseTime, 0) / valid_latencies.length
-    : 0;
-
-const stat = {
-    total: monitors.length+1,
-    up: monitors.filter(m => m.status === 'up').length,
-    down: monitors.filter(m => m.status === 'down').length,
-    latency: avg_latency
+type Stats = {
+    total: number;
+    up: number;
+    down: number;
+    avg_latency: number;
 }
 
 
 export default function MonitorPage() {
+
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState("")
+    const [stats, setStats] = useState<Stats>()
+    const [monitors, setMonitors] = useState<Monitor[]>([])
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            try {
+                const res = await api.get(
+                    "/monitors",
+                )
+                setStats(res.data.stats)
+                setMonitors((res.data.monitors))
+            } catch {
+                setError("Failed to load monitors.")
+            } finally {
+                setLoading(false)
+            }
+        }
+        void fetchData()
+    }, []);
+
     return (
         <>
-            <header className={"flex justify-between items-center w-full mt-0"}>
+            <header className={"flex justify-between items-start w-full mt-0"}>
                 <div>
                     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
                         Monitors
@@ -139,16 +65,66 @@ export default function MonitorPage() {
                 <Image src={"/streetlights.png"} alt={"Streetlights"} width={48} height={12}/>
             </header>
 
-            <div className={"overflow-y-auto no-scrollbar pt-6"}>
-                <div className={""}>
-                    <MonitorStatusGrid stat={stat} />
-                </div>
+            <div className="min-h-[400px]">
+                {loading && <LoadingState />}
+                {error && <ErrorState message={error} />}
+                {!loading && !error && stats?.total === 0 && <EmptyState />}
+                {!loading && !error && stats && stats.total > 0 && (
+                    <MonitorsContent stats={stats} monitors={monitors} />
+                )}
+            </div>
+        </>
+    )
+}
 
-                <div className={"bg-slate-900 rounded-3xl overflow-y-auto no-scrollbar"}>
-                    <MonitorsTable monitors={monitors} />
-                </div>
+function MonitorsContent({stats, monitors}: {stats: Stats, monitors: Monitor[]}) {
+
+    return (
+        <div className={"overflow-y-auto no-scrollbar pt-6 transition-opacity duration-300"}>
+            <div className={""}>
+                <MonitorStatusGrid stats={stats} />
             </div>
 
-        </>
+            <div className={"bg-slate-900 rounded-3xl overflow-y-auto no-scrollbar"}>
+                <MonitorsTable monitors={monitors} />
+            </div>
+        </div>
+    )
+}
+
+function LoadingState() {
+    return (
+        <div className="flex items-center justify-center h-64 text-gray-400">
+            Loading Monitors...
+        </div>
+    )
+}
+
+function ErrorState({ message }: { message: string }) {
+    return (
+        <div className="flex flex-col items-center justify-center h-64 text-center space-y-3">
+            <div className="text-red-500 text-lg font-semibold">
+                Something went wrong
+            </div>
+            <div className="text-sm text-gray-400">
+                {message}
+            </div>
+        </div>
+    )
+}
+
+function EmptyState() {
+    return (
+        <div className="flex flex-col items-center justify-center h-64 text-center space-y-4">
+            <div className="text-lg font-semibold">
+                No monitors yet
+            </div>
+            <div className="text-sm text-gray-400">
+                Add your first monitor to start tracking uptime.
+            </div>
+            <button className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition">
+                Add Monitor
+            </button>
+        </div>
     )
 }

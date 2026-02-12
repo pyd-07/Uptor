@@ -2,33 +2,33 @@ import { Activity, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import StatsCard from "@/components/layout/monitors/MonitorStatusCard";
 
 type stats = {
-    total: string | number;
-    up: string | number;
-    down: string | number;
-    latency: number | null;
+    total: number;
+    up: number;
+    down: number;
+    avg_latency: number;
 }
 
-export default function StatsGrid({stat}: {stat:stats}) {
+export default function StatsGrid({stats}: {stats:stats}) {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <StatsCard
                 title="Total Monitors"
-                value={stat.total}
+                value={stats.total}
                 icon={<Activity className="w-5 h-5 text-orange-400" />}
             />
             <StatsCard
                 title="Up"
-                value={stat.up}
+                value={stats.up}
                 icon={<CheckCircle2 className="w-5 h-5 text-green-400" />}
             />
             <StatsCard
                 title="Down"
-                value={stat.down}
+                value={stats.down}
                 icon={<XCircle className="w-5 h-5 text-destructive" />}
             />
             <StatsCard
                 title="Avg Latency (combined)"
-                value={stat.latency}
+                value={stats.avg_latency}
                 icon={<Clock className="w-5 h-5 text-blue-400" />}
             />
         </div>
