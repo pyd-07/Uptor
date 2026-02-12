@@ -46,7 +46,8 @@ function startWorker() {
                             last_checked_at: result.checked_at,
                             next_check_at: new Date(
                                 result.checked_at.getTime() + monitor.interval_sec * 1000
-                            )
+                            ),
+                            response_time_ms: result.response_time_ms
                         })
 
                         let transition = null

@@ -7,7 +7,10 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config({path:'../.env'});
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 app.use(cookieParser());
 
 const authRoutes = require('./Routes/auth/auth');
@@ -15,12 +18,14 @@ const monitorRoutes = require('./Routes/monitors/monitors');
 const alertRoutes = require('./Routes/alerts/alerts');
 const billingRoutes = require('./Routes/billing/status');
 const organizationRoutes = require('./Routes/organization/organization');
+const dashboardRoutes = require('./Routes/dashboard/dashboard');
 
 app.use("/auth", authRoutes);
 app.use("/monitors", monitorRoutes);
 app.use("/alerts", alertRoutes);
 app.use("/billing", billingRoutes);
 app.use("/organization", organizationRoutes);
+app.use("/", dashboardRoutes);
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });

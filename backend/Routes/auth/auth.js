@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
 
 
 router.post('/register', async (req, res) => {
-    const {email, password, org_name, org_mail} = req.body
+    const {name, email, password, org_name, org_mail} = req.body
 
     if (!email || !password || !org_name){
         return res.status(400).json({
@@ -70,8 +70,10 @@ router.post('/register', async (req, res) => {
         }
         const hashedPass = await bcrypt.hash(password,10)
         const org_exists = await Organization.findOne({mail:org_mail})
+        let user
         if (org_exists) {
             const user = new User({
+                name:name,
                 email:email,
                 password_hash:hashedPass,
                 role:"member",
@@ -84,7 +86,8 @@ router.post('/register', async (req, res) => {
                 mail: org_mail
             })
             await org.save()
-            const user = new User({
+            user = new User({
+                name:name,
                 email:email,
                 password_hash:hashedPass,
                 role:"owner",
@@ -92,11 +95,27 @@ router.post('/register', async (req, res) => {
             }) 
             await user.save()
         }
-        const token = jwt.sign({email, hashedPass}, SECRET)
-        return res.status(201).json({
-            message:"Registration Successful",
-            token:token
-        })
+        const token = jwt.sign(
+            {
+                userId: user._id,
+                orgId: user.organizationId,
+                role: user.role
+            },
+            SECRET,
+            { expiresIn: "7d" }
+            )
+
+            res.cookie("auth_token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+            })
+
+            return res.status(201).json({
+            message: "Registration Successful"
+            })
+
     } catch (error) {
         return res.status(500).json({
             message:"Internal Server Error"
