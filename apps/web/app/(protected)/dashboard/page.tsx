@@ -5,33 +5,16 @@ import DashboardCard from "@/components/layout/dashboard/DashboardCard";
 import DashboardTable from "@/components/layout/dashboard/DashboardTable";
 import Image from "next/image";
 import {api} from "@/lib/api";
+import { MonitorFormat } from '@/lib/monitors';
+import { DashboardPageStats } from '@/lib/monitors';
 
-
-type DashboardStats = {
-    totalMonitors: number
-    upMonitors: number
-    downMonitors: number
-    pausedMonitors: number
-    unknownMonitors: number
-}
-
-type DashboardMonitor = {
-    id: string;
-    name: string;
-    url: string;
-    status: string;
-    responseTime: number | null;
-    interval: string;
-    lastChecked: string;
-    is_active: boolean;
-};
 
 export default function Page() {
 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
-    const [stats, setStats] = useState<DashboardStats>()
-    const [monitorsArr, setMonitorsArr] = useState<DashboardMonitor[]>([])
+    const [stats, setStats] = useState<DashboardPageStats>()
+    const [monitorsArr, setMonitorsArr] = useState<MonitorFormat[]>([])
 
 
     useEffect(() => {
@@ -79,7 +62,7 @@ export default function Page() {
 }
 
 
-function DashboardContent({stats, monitors}: { stats: DashboardStats, monitors: DashboardMonitor[] }) {
+function DashboardContent({stats, monitors}: { stats: DashboardPageStats, monitors: MonitorFormat[] }) {
 
     return (
         <div className="text-white h-screen overflow-y-auto no-scrollbar md:flex md:flex-col justify-evenly">

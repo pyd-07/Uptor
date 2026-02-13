@@ -5,32 +5,16 @@ import Image from "next/image";
 import MonitorStatusGrid from "@/components/layout/monitors/MonitorStatusGrid";
 import {MonitorsTable} from "@/components/layout/monitors/MonitorsTable";
 import {api} from "@/lib/api";
-
-type Monitor = {
-    id: string;
-    name: string;
-    url: string;
-    status: string;
-    responseTime: number | null;
-    interval: string;
-    lastChecked: string;
-    is_active: boolean;
-}
-
-type Stats = {
-    total: number;
-    up: number;
-    down: number;
-    avg_latency: number;
-}
+import { MonitorFormat } from '@/lib/monitors';
+import { MonitorPageStats } from '@/lib/monitors';
 
 
 export default function MonitorPage() {
 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
-    const [stats, setStats] = useState<Stats>()
-    const [monitors, setMonitors] = useState<Monitor[]>([])
+    const [stats, setStats] = useState<MonitorPageStats>()
+    const [monitors, setMonitors] = useState<MonitorFormat[]>([])
 
     useEffect(() => {
 
@@ -77,7 +61,7 @@ export default function MonitorPage() {
     )
 }
 
-function MonitorsContent({stats, monitors}: {stats: Stats, monitors: Monitor[]}) {
+function MonitorsContent({stats, monitors}: {stats: MonitorPageStats, monitors: MonitorFormat[]}) {
 
     return (
         <div className={"overflow-y-auto no-scrollbar pt-6 transition-opacity duration-300"}>

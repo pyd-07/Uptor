@@ -1,17 +1,7 @@
 import MonitorCard from "@/components/layout/monitors/MonitorCard";
+import { MonitorFormat } from "@/lib/monitors";
 
-type Monitor = {
-    id: string;
-    name: string;
-    url: string;
-    status: string;
-    lastChecked: string;
-    responseTime: number | null;
-    interval: string;
-    is_active: boolean;
-};
-
-export function MonitorsTable({ monitors }: { monitors: Monitor[] }) {
+export function MonitorsTable({ monitors }: { monitors: MonitorFormat[] }) {
 
     return (
         <>

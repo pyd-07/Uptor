@@ -1,15 +1,6 @@
-type Monitor = {
-    id: string;
-    name:string;
-    url:string;
-    status:string;
-    lastChecked:string;
-    responseTime:number | null;
-    interval:string;
-    is_active:boolean;
-}
+import { MonitorFormat } from "@/lib/monitors";
 
-function MonitorCard({ monitor }: { monitor: Monitor }) {
+function MonitorCard({ monitor }: { monitor: MonitorFormat }) {
     return (
         <div className="glass-card glass-card-hover p-4 rounded-xl">
             <div className="flex items-start justify-between mb-3">
