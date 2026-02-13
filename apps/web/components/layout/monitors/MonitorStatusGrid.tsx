@@ -1,14 +1,8 @@
 import { Activity, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import StatsCard from "@/components/layout/monitors/MonitorStatusCard";
+import { PageStats } from '@/lib/monitors';
 
-type stats = {
-    total: number;
-    up: number;
-    down: number;
-    avg_latency: number;
-}
-
-export default function StatsGrid({stats}: {stats:stats}) {
+export default function StatsGrid({stats}: {stats:PageStats}) {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <StatsCard

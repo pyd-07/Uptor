@@ -1,19 +1,19 @@
 "use client"
 
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import Image from "next/image";
 import MonitorStatusGrid from "@/components/layout/monitors/MonitorStatusGrid";
 import {MonitorsTable} from "@/components/layout/monitors/MonitorsTable";
 import {api} from "@/lib/api";
-import { MonitorFormat } from '@/lib/monitors';
-import { MonitorPageStats } from '@/lib/monitors';
+import { buildMonitorStats, MonitorFormat } from '@/lib/monitors';
+import { PageStats } from '@/lib/monitors';
 
 
 export default function MonitorPage() {
 
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
-    const [stats, setStats] = useState<MonitorPageStats>()
+    const [stats, setStats] = useState<PageStats>()
     const [monitors, setMonitors] = useState<MonitorFormat[]>([])
 
     useEffect(() => {
@@ -23,8 +23,9 @@ export default function MonitorPage() {
                 const res = await api.get(
                     "/monitors",
                 )
-                setStats(res.data.stats)
-                setMonitors((res.data.monitors))
+                const builtStats = buildMonitorStats(res.data)
+                setStats(builtStats)
+                setMonitors(res.data)
             } catch {
                 setError("Failed to load monitors.")
             } finally {
@@ -61,7 +62,7 @@ export default function MonitorPage() {
     )
 }
 
-function MonitorsContent({stats, monitors}: {stats: MonitorPageStats, monitors: MonitorFormat[]}) {
+function MonitorsContent({stats, monitors}: {stats: PageStats, monitors: MonitorFormat[]}) {
 
     return (
         <div className={"overflow-y-auto no-scrollbar pt-6 transition-opacity duration-300"}>
