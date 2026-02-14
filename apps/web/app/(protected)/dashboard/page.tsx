@@ -3,10 +3,11 @@
 import {useState, useEffect} from 'react'
 import DashboardCard from "@/components/layout/dashboard/DashboardCard";
 import DashboardTable from "@/components/layout/dashboard/DashboardTable";
-import Image from "next/image";
 import {api} from "@/lib/api";
 import { buildMonitorStats, MonitorFormat } from '@/lib/monitors';
 import { PageStats } from '@/lib/monitors';
+import Link from 'next/link';
+import { Activity, AlertTriangle, Gauge, PauseCircle, Plus, RefreshCcw } from 'lucide-react';
 
 
 export default function Page() {
@@ -15,15 +16,17 @@ export default function Page() {
     const [error, setError] = useState("")
     const [stats, setStats] = useState<PageStats>()
     const [monitorsArr, setMonitorsArr] = useState<MonitorFormat[]>([])
+    const [lastUpdated, setLastUpdated] = useState<string | null>(null)
 
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const res = await api.get("/summary")
-                const builtStats = buildMonitorStats(res.data.allMonitors)
+                const builtStats = buildMonitorStats(res.data)
                 setStats(builtStats)
-                setMonitorsArr(res.data.slowest_monitors)
+                setMonitorsArr(res.data)
+                setLastUpdated(new Date().toISOString())
             } catch (err){
                 console.error(err);
                 setError("Failed to load dashboard")
@@ -36,21 +39,41 @@ export default function Page() {
 
 
         return (
-            <div className={"overflow-y-auto no-scrollbar"}>
-                <header className={"flex justify-between items-start w-full mt-0"}>
+            <div className={"overflow-y-auto no-scrollbar pb-8 space-y-6"}>
+                <header className={"flex flex-col gap-6 md:flex-row md:items-center md:justify-between"}>
                     <div>
-                        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                            Dashboard Overview.
-                        </h3>
+                        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                            Dashboard Overview
+                        </h1>
                         <blockquote className="mt-6 border-l-2 pl-6 italic">
-                            Get your insights
+                            Monitor uptime, outages, and response latency for all endpoints from one place.
                         </blockquote>
                     </div>
 
-                    <Image src={"/streetlights.png"} alt={"Streetlights"} width={48} height={12}/>
+                    <div className="flex flex-col items-start md:items-end gap-3">
+                        {!loading && !error && stats && (
+                            <div className="flex flex-wrap gap-2 pt-1">
+                                <span className="rounded-full bg-slate-700/70 px-3 py-1 text-xs text-slate-200 border border-white/10">
+                                    {stats.total} Total
+                                </span>
+                                <span className="rounded-full bg-green-500/15 px-3 py-1 text-xs text-green-300 border border-green-400/20">
+                                    {stats.up} Healthy
+                                </span>
+                                <span className="rounded-full bg-red-500/15 px-3 py-1 text-xs text-red-300 border border-red-400/20">
+                                    {stats.down} Down
+                                </span>
+                            </div>
+                        )}
+                        <div className="flex items-center gap-1.5 text-xs text-slate-300">
+                            <RefreshCcw className="size-3.5" />
+                            <span>
+                                {lastUpdated ? `Updated ${formatTimestamp(lastUpdated)}` : 'Waiting for fresh data'}
+                            </span>
+                        </div>
+                    </div>
                 </header>
 
-                <div className="min-h-[400px]">
+                <div className="min-h-[420px]">
                     {loading && <LoadingState />}
                     {error && <ErrorState message={error} />}
                     {!loading && !error && stats?.total === 0 && <EmptyState />}
@@ -67,37 +90,60 @@ export default function Page() {
 function DashboardContent({stats, monitors}: { stats: PageStats, monitors: MonitorFormat[] }) {
 
     return (
-        <div className="text-white h-screen overflow-y-auto no-scrollbar md:flex md:flex-col justify-evenly">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="text-white space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
                 <DashboardCard
                     name="Monitors Up"
                     number={stats.up}
-                    total_monitors={stats.total}
+                    subtitle={`${stats.total} total monitors`}
                     color={"text-green-500"}
+                    icon={Activity}
+                    progressTotal={stats.total}
                 />
                 <DashboardCard
                     name="Monitors Down"
                     number={stats.down}
-                    total_monitors={stats.total}
+                    subtitle={`${stats.total} total monitors`}
                     color={"text-red-500"}
+                    icon={AlertTriangle}
+                    progressTotal={stats.total}
                 />
                 <DashboardCard
                     name="Paused / Unknown"
                     number={stats.paused + stats.unknown}
-                    total_monitors={stats.total}
+                    subtitle="Paused + unknown monitors"
                     color={"text-orange-400"}
+                    icon={PauseCircle}
+                    progressTotal={stats.total}
                 />
                 <DashboardCard
                     name="Average Latency"
                     number={stats.avg_latency}
-                    total_monitors={300}
+                    subtitle={stats.total > 0 ? `Across ${stats.total} monitored endpoints` : 'No latency data yet'}
                     color={stats.avg_latency>300?"text-red-500":"text-green-500"}
+                    icon={Gauge}
+                    suffix="ms"
                 />
             </div>
-            <div
-                className="bg-slate-600/50 rounded-3xl overflow-auto no-scrollbar glass-card glass-card-hover mt-5">
-                <div className={"text-gray-300 font-extrabold text-xl text-center"}>
-                    Monitors Status
+
+            <div className="hidden lg:block rounded-3xl overflow-auto no-scrollbar glass-card">
+                <div className="border-b border-white/10 px-5 py-4 sm:px-6 sm:py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <div className={"text-white font-semibold text-lg"}>
+                            Monitors Status
+                        </div>
+                        <div className="text-xs sm:text-sm text-slate-300">
+                            Live monitor statuses, endpoint response times, and recent checks.
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs sm:text-sm">
+                        <span className="rounded-full border border-green-400/20 bg-green-500/10 px-3 py-1 text-green-300">
+                            {stats.up}
+                        </span>
+                        <span className="rounded-full border border-red-400/20 bg-red-500/10 px-3 py-1 text-red-300">
+                            {stats.down}
+                        </span>
+                    </div>
                 </div>
                 <DashboardTable monitors={monitors}/>
             </div>
@@ -108,36 +154,60 @@ function DashboardContent({stats, monitors}: { stats: PageStats, monitors: Monit
 function LoadingState() {
     return (
         <div className="flex items-center justify-center h-64 text-gray-400">
-            Loading dashboard...
+            Loading Dashboard...
         </div>
     )
 }
 
 function ErrorState({ message }: { message: string }) {
     return (
-        <div className="flex flex-col items-center justify-center h-64 text-center space-y-3">
-            <div className="text-red-500 text-lg font-semibold">
+        <div className="flex flex-col items-center justify-center h-72 rounded-3xl glass-card text-center px-6 space-y-3">
+            <div className="inline-flex size-12 items-center justify-center rounded-full bg-red-500/15 border border-red-400/30">
+                <AlertTriangle className="size-5 text-red-400" />
+            </div>
+            <div className="text-red-400 text-lg font-semibold">
                 Something went wrong
             </div>
             <div className="text-sm text-gray-400">
                 {message}
             </div>
+            <button
+                onClick={() => window.location.reload()}
+                className="rounded-xl border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/10 transition"
+            >
+                Retry
+            </button>
         </div>
     )
 }
 
 function EmptyState() {
     return (
-        <div className="flex flex-col items-center justify-center h-64 text-center space-y-4">
-            <div className="text-lg font-semibold">
+        <div className="flex flex-col items-center justify-center h-72 text-center space-y-4 rounded-3xl glass-card px-6">
+            <div className="inline-flex size-12 items-center justify-center rounded-full bg-indigo-500/15 border border-indigo-400/30">
+                <Activity className="size-5 text-indigo-300" />
+            </div>
+            <div className="text-lg font-semibold text-white">
                 No monitors yet
             </div>
             <div className="text-sm text-gray-400">
                 Add your first monitor to start tracking uptime.
             </div>
-            <button className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition">
+            <Link
+                href={'/monitors/new'}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition"
+            >
+                <Plus className="size-4" />
                 Add Monitor
-            </button>
+            </Link>
         </div>
     )
+}
+
+function formatTimestamp(value: string) {
+    const parsedDate = new Date(value)
+    return parsedDate.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+    })
 }

@@ -18,6 +18,7 @@ export default function AddMonitorsPage() {
       <div className="pt-6">
         <AddMonitorForm />
       </div>
+      
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import {useEffect, useState} from 'react'
 import Image from "next/image";
+import Link from 'next/link';
 import MonitorStatusGrid from "@/components/layout/monitors/MonitorStatusGrid";
 import {MonitorsTable} from "@/components/layout/monitors/MonitorsTable";
 import {api} from "@/lib/api";
@@ -23,6 +24,7 @@ export default function MonitorPage() {
                 const res = await api.get(
                     "/monitors",
                 )
+                console.log(res.data)
                 const builtStats = buildMonitorStats(res.data)
                 setStats(builtStats)
                 setMonitors(res.data)
@@ -50,7 +52,7 @@ export default function MonitorPage() {
                 <Image src={"/streetlights.png"} alt={"Streetlights"} width={48} height={12}/>
             </header>
 
-            <div className="min-h-[400px]">
+            <div className="min-h-[400px] overflow-y-auto no-scrollbar">
                 {loading && <LoadingState />}
                 {error && <ErrorState message={error} />}
                 {!loading && !error && stats?.total === 0 && <EmptyState />}
@@ -107,9 +109,11 @@ function EmptyState() {
             <div className="text-sm text-gray-400">
                 Add your first monitor to start tracking uptime.
             </div>
-            <button className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition">
-                Add Monitor
-            </button>
+            <Link href={'/monitors/new'}>
+                <button className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition">
+                    Add Monitor
+                </button>
+            </Link>
         </div>
     )
 }

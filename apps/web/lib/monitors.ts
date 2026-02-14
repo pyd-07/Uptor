@@ -1,8 +1,8 @@
 export type MonitorFormat = {
-    id: string;
+    _id: string;
     name: string;
     url: string;
-    status: string;
+    last_status: string;
     lastChecked: string;
     responseTime: number | null;
     interval: string;
@@ -22,17 +22,17 @@ export type PageStats = {
 export type MonitorFormDraft = {
   name: string;
   url: string;
-  intervalSec: number;
-  timeoutMs: number;
+  interval_sec: number;
+  timeout_ms: number;
 };
 
 
 export function buildMonitorStats(monitors: MonitorFormat[]): PageStats {
   const total = monitors.length;
-  const up = monitors.filter((monitor) => monitor.is_active && monitor.status === "up").length;
-  const down = monitors.filter((monitor) => monitor.is_active && monitor.status === "down").length;
+  const up = monitors.filter((monitor) => monitor.is_active && monitor.last_status === "up").length;
+  const down = monitors.filter((monitor) => monitor.is_active && monitor.last_status === "down").length;
   const paused = monitors.filter((monitor) => !monitor.is_active).length;
-  const unknown = monitors.filter((monitor) => monitor.is_active && monitor.status === "unknown").length;
+  const unknown = monitors.filter((monitor) => monitor.is_active && monitor.last_status === "unknown").length;
 
   const latencies = monitors
     .map((monitor) => monitor.responseTime)
@@ -44,4 +44,43 @@ export function buildMonitorStats(monitors: MonitorFormat[]): PageStats {
       : 0;
 
   return { total, up, down, paused, unknown, avg_latency };
+}
+
+export function validateMonitorDraft(draft: MonitorFormDraft): Record<string, string> {
+  const errors: Record<string, string> = {};
+  const intervalSec = Number.isFinite(draft.interval_sec) ? draft.interval_sec : 0;
+  const timeoutMs = Number.isFinite(draft.timeout_ms) ? draft.timeout_ms : 0;
+
+  if (!draft.name.trim()) {
+    errors.name = "Monitor name is required.";
+  } else if (draft.name.trim().length < 3) {
+    errors.name = "Monitor name must be at least 3 characters.";
+  }
+
+  if (!draft.url.trim()) {
+    errors.url = "Endpoint URL is required.";
+  } else {
+    try {
+      const parsed = new URL(draft.url);
+      if (!["http:", "https:"].includes(parsed.protocol)) {
+        errors.url = "Only http and https URLs are supported.";
+      }
+    } catch {
+      errors.url = "Please enter a valid URL.";
+    }
+  }
+
+  if (intervalSec < 30 || intervalSec > 3600) {
+    errors.intervalSec = "Interval must be between 30 and 3600 seconds.";
+  }
+
+  if (timeoutMs < 1000 || timeoutMs > 30000) {
+    errors.timeoutMs = "Timeout must be between 1000 and 30000 milliseconds.";
+  }
+
+  if (timeoutMs >= intervalSec * 1000) {
+    errors.timeoutMs = "Timeout must be smaller than the interval.";
+  }
+
+  return errors;
 }

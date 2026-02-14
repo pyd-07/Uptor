@@ -1,32 +1,59 @@
 import React from 'react'
+import { LucideIcon } from 'lucide-react';
 
 type DashboardCardProps = {
     name: string;
     number: string | number;
-    total_monitors: string | number;
+    subtitle: string;
     color: string;
+    icon: LucideIcon;
+    progressTotal?: number;
+    suffix?: string;
 };
 
-export default function DashboardCard({ name, number, total_monitors, color }: DashboardCardProps) {
+export default function DashboardCard({
+    name,
+    number,
+    subtitle,
+    color,
+    icon: Icon,
+    progressTotal,
+    suffix,
+}: DashboardCardProps) {
+
+    const numericValue = typeof number === 'number' ? number : Number(number)
+    const hasProgress = Number.isFinite(numericValue) && !!progressTotal && progressTotal > 0
+    const progress = hasProgress ? Math.min(100, Math.round((numericValue / progressTotal) * 100)) : null
+    const displayValue = typeof number === 'number' ? number.toLocaleString() : number
 
     return (
-        <div className="w-full min-h-[220px] bg-slate-700/50 rounded-3xl p-5 glass-card glass-card-hover flex flex-col justify-between">
-
-            {/* Top Section */}
-            <div className="flex flex-col justify-between py-4 gap-6">
-                <div className="text-white/60 text-xl">{name}</div>
-
-                <div className={`text-5xl font-semibold ${color}`}>
-                    {number}
+        <article className="w-full min-h-[210px] rounded-3xl px-5 py-4 glass-card glass-card-hover flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-3">
+                <div className="text-white/70 text-sm tracking-wide uppercase">
+                    {name}
                 </div>
-
-            </div>
-
-            <div className="bg-slate-600/40 rounded-3xl p-4 flex items-center justify-between border border-white/10">
-                <div className="text-white text-sm font-medium">
-                    Out of {total_monitors}
+                <div className={`inline-flex items-center justify-center size-9 rounded-xl bg-slate-700/70 border border-white/10 ${color}`}>
+                    <Icon className="size-4" />
                 </div>
             </div>
-        </div>
+
+            <div className="flex-1 flex items-center py-4">
+                <div className={`text-4xl sm:text-5xl font-semibold ${color}`}>
+                    {displayValue}{suffix ? ` ${suffix}` : ''}
+                </div>
+            </div>
+
+            <div className="space-y-2 rounded-2xl border border-white/10 bg-slate-700/35 p-3">
+                <div className="flex items-center justify-between gap-3 text-xs text-slate-300">
+                    <span>{subtitle}</span>
+                    {progress !== null && <span>{progress}%</span>}
+                </div>
+                {progress !== null && (
+                    <div className="h-1.5 rounded-full bg-slate-600/70 overflow-hidden">
+                        <div className={`h-full rounded-full bg-current ${color}`} style={{ width: `${progress}%` }} />
+                    </div>
+                )}
+            </div>
+        </article>
     );
 }

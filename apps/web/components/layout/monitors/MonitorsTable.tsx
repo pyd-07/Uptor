@@ -30,7 +30,7 @@ export function MonitorsTable({ monitors }: { monitors: MonitorFormat[] }) {
                         <tbody>
                         {monitors.map((monitor) => (
                             <tr
-                                key={monitor.id}
+                                key={monitor._id}
                                 className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group"
                             >
                                 <td className="px-6 py-4">
@@ -45,14 +45,14 @@ export function MonitorsTable({ monitors }: { monitors: MonitorFormat[] }) {
                                 <td className="px-6 py-4">
                     <span
                         className={`text-sm font-medium ${
-                            monitor.status === "up"
+                            monitor.last_status === "up"
                                 ? "text-green-400"
-                                : monitor.status === "down"
+                                : monitor.last_status === "down"
                                     ? "text-red-400"
                                     : "text-orange-400"
                         }`}
                     >
-                      {monitor.status.toUpperCase()}
+                      {monitor.last_status.toUpperCase()}
                     </span>
                                 </td>
 
@@ -96,7 +96,7 @@ export function MonitorsTable({ monitors }: { monitors: MonitorFormat[] }) {
                 </div>
 
                 {monitors.map((monitor) => (
-                    <MonitorCard key={monitor.id} monitor={monitor} />
+                    <MonitorCard key={monitor._id} monitor={monitor} />
                 ))}
             </div>
         </>

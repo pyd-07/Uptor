@@ -5,19 +5,17 @@ const {Monitor} = require('../../Models/Monitor');
 
 
 router.get('/summary', auth, async(req, res)=>{
+    const org_id = req.org_id
     try{
-        const monitorsArr = await Monitor.find({organizationId: req.org_Id})
+        const monitors = await Monitor.find({organizationId: org_id})
 
-        const slowest_10 = monitorsArr
+        const slowest_3 = monitors
         .filter((monitor)=>monitor.response_time_ms!=null)
         .sort((a, b) => b.response_time_ms - a.response_time_ms)
-        .slice(0, 10);
+        .slice(0, 3);
 
 
-        return res.status(200).json({
-            allMonitors: monitorsArr,
-            slowest_monitors: slowest_10
-        });
+        return res.status(200).json(monitors);
     }catch(err){
         console.error("Dashboard Error:", err);
         return res.status(500).json({
