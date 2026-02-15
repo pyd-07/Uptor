@@ -8,8 +8,8 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["owner", "member"],
-      default: "member"
+      enum: ["Owner", "Member"],
+      default: "Member"
     },
 
     organizationId: {

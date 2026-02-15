@@ -15,21 +15,21 @@ function MonitorCard({ monitor }: { monitor: MonitorFormat }) {
             <div className="grid grid-cols-4 gap-3 text-sm">
                 <div>
                     <div className="text-gray-300 text-xs mb-1">Last Checked</div>
-                    <div className="text-gray-400">{monitor.lastChecked}</div>
+                    <div className="text-gray-400">{monitor.last_checked_at}</div>
                 </div>
                 <div>
                     <div className="text-gray-300 text-xs mb-1">Response</div>
                     <div className={
-                        monitor.status === 'up' ? 'text-green-400' :
-                            monitor.status === 'down' ? 'text-red-400' :
+                        monitor.last_status === 'up' ? 'text-green-400' :
+                            monitor.last_status === 'down' ? 'text-red-400' :
                                 'text-orange-400'
                     }>
-                        {(monitor.responseTime? monitor.responseTime + "ms": "null")}
+                        {(monitor.response_time_ms? monitor.response_time_ms + "ms": "null")}
                     </div>
                 </div>
                 <div>
                     <div className="text-gray-400 text-xs mb-1">Interval</div>
-                    <div className="text-gray-300">{monitor.interval}</div>
+                    <div className="text-gray-300">{monitor.interval_sec} sec</div>
                 </div>
                 <div>
                     <button className={"glass-card glass-card-hover rounded-lg w-full mb-1"}>

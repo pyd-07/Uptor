@@ -10,13 +10,14 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
 
 type DashboardMonitor = {
-    _id: string;
+     _id: string;
     name: string;
     url: string;
     last_status: string;
-    responseTime: number | null;
-    interval: string;
-    lastChecked: string;
+    last_checked_at: string;
+    response_time_ms: number | null;
+    interval_sec: number | null;
+    timeout_ms: number | null;
     is_active: boolean;
 };
 
@@ -37,20 +38,6 @@ function statusBadge(status: string, active: boolean) {
     return <Badge className="bg-slate-500/20 text-slate-200 border border-slate-300/20">UNKNOWN</Badge>;
 }
 
-function formatLastChecked(value: string) {
-    const parsedDate = new Date(value)
-
-    if (Number.isNaN(parsedDate.getTime())) {
-        return value || '-'
-    }
-
-    return parsedDate.toLocaleString([], {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    })
-}
 
 function formatResponseTime(responseTime: number | null, isActive: boolean) {
     if (!isActive || responseTime === null) {
@@ -87,7 +74,7 @@ export default function DashboardTable({ monitors }: { monitors: DashboardMonito
                     </TableRow>
                 ) : (
                     monitors.map((monitor, index) => (
-                        <TableRow key={monitor._id} className={index % 2 === 0 ? 'bg-slate-900/20' : 'bg-transparent'}>
+                        <TableRow key={monitor._id} className={'bg-transparent'}>
                             <TableCell className="font-medium text-gray-100 px-4 sm:px-6">
                                 {monitor.name}
                             </TableCell>
@@ -105,10 +92,10 @@ export default function DashboardTable({ monitors }: { monitors: DashboardMonito
                                 </a>
                             </TableCell>
                             <TableCell>
-                                {formatResponseTime(monitor.responseTime, monitor.is_active)}
+                                {formatResponseTime(monitor.response_time_ms, monitor.is_active)}
                             </TableCell>
                             <TableCell className="text-right text-muted-foreground px-4 sm:px-6">
-                                {formatLastChecked(monitor.lastChecked)}
+                                {(monitor.last_checked_at)?monitor.last_checked_at:"-"}
                             </TableCell>
                         </TableRow>
                     ))

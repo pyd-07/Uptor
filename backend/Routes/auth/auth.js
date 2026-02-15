@@ -72,11 +72,11 @@ router.post('/register', async (req, res) => {
         const org_exists = await Organization.findOne({mail:org_mail})
         let user
         if (org_exists) {
-            const user = new User({
+            user = new User({
                 name:name,
                 email:email,
                 password_hash:hashedPass,
-                role:"member",
+                role:"Member",
                 organizationId:org_exists._id
             }) 
             await user.save()
@@ -90,7 +90,7 @@ router.post('/register', async (req, res) => {
                 name:name,
                 email:email,
                 password_hash:hashedPass,
-                role:"owner",
+                role:"Owner",
                 organizationId:org._id
             }) 
             await user.save()
@@ -123,15 +123,39 @@ router.post('/register', async (req, res) => {
     }
 })
 
-router.get('/me', auth, (req, res)=>{
-    res.json({
-        user:{
-            id: req.user_id,
-            orgId: req.org_id,
-            role: req.role
-        }
-    })
+router.get('/me', auth, async(req, res)=>{
+
+    try{
+        const organisation = await Organization.findById(req.org_id)
+        const user = await User.findById(req.user_id)
+        res.json({
+            user:{
+                name: user.name,
+                org_name: organisation.name,
+                role: req.role
+            }
+        })
+    } catch {
+        res.status(404).json({
+            user: {
+                name: req.user_id,
+                org_name: "err not found",
+                role: req.role
+            }
+        })
+    }
 })
+
+router.post("/logout", (req, res) => {
+    res.clearCookie("auth_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax"
+    })
+
+    return res.status(200).json({ message: "Logged out" })
+})
+
 
 
 module.exports = router

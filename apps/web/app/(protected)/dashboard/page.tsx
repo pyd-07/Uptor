@@ -183,7 +183,7 @@ function ErrorState({ message }: { message: string }) {
 
 function EmptyState() {
     return (
-        <div className="flex flex-col items-center justify-center h-72 text-center space-y-4 rounded-3xl glass-card px-6">
+        <div className="flex flex-col items-center justify-center h-72 text-center space-y-4 px-6">
             <div className="inline-flex size-12 items-center justify-center rounded-full bg-indigo-500/15 border border-indigo-400/30">
                 <Activity className="size-5 text-indigo-300" />
             </div>

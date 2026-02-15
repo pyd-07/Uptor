@@ -1,4 +1,15 @@
+"use client"
+
+import { api } from "@/lib/api";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+type UserType = {
+    name: string,
+    org_name: string,
+    role: string
+}
 
 export default function Sidebar() {
     return (
@@ -14,7 +25,7 @@ export default function Sidebar() {
             transition-all duration-300
         ">
             <Streetlights/>
-            <User name={"Piyush Yadav"} role={"Admin"} />
+            <User/>
             <hr className="border-white opacity-20 m-0" />
 
             <div className="flex-1 overflow-y-auto pr-1">
@@ -34,20 +45,29 @@ function Streetlights(){
     )
 }
 
-type UserProps = {
-    name: string;
-    role: string;
-}
-function User({name, role}:UserProps){
+function User() {
+    const [user, setUser] = useState<UserType>()
+    useEffect(()=>{
+        async function fetchUser() {
+            try {
+                const res = await api.get("/auth/me")
+                setUser(res.data.user)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        void fetchUser()
+    },[])
+
     return (
         <div className={"relative text-white flex"}>
-            <Image src={'/user_pfp.png'} alt={"User pfp"}  width={48} height={48}/>
-            <div className={"hidden md:flex flex-col justify-evenly ml-2"}>
-                <span className={"text-sm opacity-50"}>{role}</span>
-                <span className={"text-sm"}>{name}</span>
+            <Image src={'/user_pfp.png'} alt={"User pfp"}  width={58} height={48}/>
+            <div className={"hidden md:flex flex-col justify-evenly ml-2 "}>
+                <span className={"text-sm opacity-50"}>{user?.role}</span>
+                <span className={"text-sm opacity-70"}>{user?.org_name}</span>
+                <span className={"text-sm"}>{user?.name}</span>
             </div>
         </div>
-
     )
 }
 
@@ -65,7 +85,7 @@ function Navigations() {
             <span className="text-[10px] opacity-50 hidden md:block mb-2 px-2">MAIN</span>
             <ul className="flex flex-col gap-2">
                 {navItems.map((item) => (
-                    <a key={item.label} href={item.href} className="group">
+                    <Link key={item.label} href={item.href} className="group">
                         <li className="
                             flex items-center
                             justify-center md:justify-start
@@ -85,7 +105,7 @@ function Navigations() {
                                 {item.label}
                             </span>
                         </li>
-                    </a>
+                    </Link>
                 ))}
             </ul>
         </div>
@@ -102,14 +122,13 @@ function AddMonitorBox() {
                 <div className={"text-xs text-center font-semibold opacity-50"}>Adding your monitor could not be easier.</div>
             </div>
 
-            <a href="/monitors/new">
+            <Link href="/monitors/new">
                 <button
                     className={"bg-orange-500 p-3 md:px-4 md:py-2 rounded-full hover:bg-orange-400 transition-colors flex items-center justify-center"}>
                     <Image src={"/add_icon.png"} alt={"icon"} width={16} height={16}/>
                     <span className="hidden md:inline ml-2 text-sm font-medium text-white font-semibold">Add Monitor</span>
-                {/*  Add the Link to add Monitor*/}
                 </button>
-            </a>
+            </Link>
         </div>
     )
 }

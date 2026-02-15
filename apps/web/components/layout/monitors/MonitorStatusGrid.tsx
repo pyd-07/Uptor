@@ -21,7 +21,7 @@ export default function StatsGrid({stats}: {stats:PageStats}) {
                 icon={<XCircle className="w-5 h-5 text-destructive" />}
             />
             <StatsCard
-                title="Avg Latency (combined)"
+                title="Avg Latency [ms]"
                 value={stats.avg_latency}
                 icon={<Clock className="w-5 h-5 text-blue-400" />}
             />

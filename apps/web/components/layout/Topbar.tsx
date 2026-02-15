@@ -1,4 +1,9 @@
+"use client"
+import { api } from "@/lib/api";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 export default function Topbar() {
     return (
@@ -36,35 +41,46 @@ function SearchBar() {
     )
 }
 
-function More() {
-    "use client"
-    // Add Links for alerts and notification
+function More() {  
+
+    const router = useRouter()
+
+    async function handleLogout() {
+        try {
+        await api.post("/auth/logout")
+
+        router.replace("/login")
+        router.refresh()
+        } catch (err) {
+        console.error("Logout failed:", err)
+        }
+    }
+
     return (
         <div className="flex items-center gap-3">
-            <a href="/about">
+            <Link href="/about">
                 <button className="bg-slate-950/80 border border-white/10 rounded-2xl p-2.5 hover:bg-slate-900 transition">
                     <Image src="/topbar/about.png" alt="About Us" width={18} height={18} />
                 </button>
-            </a>
+            </Link>
 
             <button className="bg-slate-950/80 border border-white/10 rounded-2xl p-2.5 hover:bg-slate-900 transition">
                 <Image src="/alert.png" alt="notifications" width={18} height={18} />
             </button>
-            {/*Add the logout action*/}
+            
             <details className="relative">
                 <summary className="list-none cursor-pointer bg-slate-950/80 border border-white/10 rounded-2xl p-2 hover:bg-slate-900 transition [&::-webkit-details-marker]:hidden">
                     <Image src="/user_pfp.png" alt="profile" width={24} height={24} className="rounded-full" />
                 </summary>
                 <div className="absolute right-0 mt-2 w-44 rounded-2xl border border-white/10 bg-slate-950/95 p-2 shadow-xl z-50">
                     <div className="px-3 py-2 text-xs text-white/60">Account</div>
-                    <form >
-                        <button
-                            type="submit"
-                            className="w-full text-left px-3 py-2 text-sm rounded-xl hover:bg-slate-900 transition text-white"
-                        >
-                            Log out
-                        </button>
-                    </form>
+
+                    <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-3 py-2 text-sm rounded-xl hover:bg-slate-900 transition text-white"
+                    >
+                    Log out
+                    </button>
                 </div>
             </details>
         </div>

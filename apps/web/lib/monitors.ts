@@ -3,9 +3,10 @@ export type MonitorFormat = {
     name: string;
     url: string;
     last_status: string;
-    lastChecked: string;
-    responseTime: number | null;
-    interval: string;
+    last_checked_at: string;
+    response_time_ms: number | null;
+    interval_sec: number | null;
+    timeout_ms: number | null;
     is_active: boolean;
 }
 
@@ -35,7 +36,7 @@ export function buildMonitorStats(monitors: MonitorFormat[]): PageStats {
   const unknown = monitors.filter((monitor) => monitor.is_active && monitor.last_status === "unknown").length;
 
   const latencies = monitors
-    .map((monitor) => monitor.responseTime)
+    .map((monitor) => monitor.response_time_ms)
     .filter((value): value is number => value != null);
 
   const avg_latency =
@@ -70,7 +71,7 @@ export function validateMonitorDraft(draft: MonitorFormDraft): Record<string, st
     }
   }
 
-  if (intervalSec < 30 || intervalSec > 3600) {
+  if (intervalSec < 300 || intervalSec > 3600) {
     errors.intervalSec = "Interval must be between 30 and 3600 seconds.";
   }
 

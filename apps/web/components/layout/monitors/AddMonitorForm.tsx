@@ -14,7 +14,7 @@ const DefaultFormDraft : MonitorFormDraft ={
     timeout_ms: 5000
 }
 
-const INTERVAL_PRESETS = [30, 60, 120, 300, 600, 1800];
+const INTERVAL_PRESETS = [ 300, 600, 1800];
 const TIMEOUT_PRESETS = [1000, 3000, 5000, 10000, 15000];
 
 type Feedback = {

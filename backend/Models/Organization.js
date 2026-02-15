@@ -11,7 +11,7 @@ const organizationSchema = new mongoose.Schema(
       default: "free"
     },
 
-    monitor_limit: { type: Number, default: 3 },
+    monitor_limit: { type: Number, default: 5 },
 
     used_monitors: {type: Number, default: 0},
 

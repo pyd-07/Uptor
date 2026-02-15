@@ -73,12 +73,11 @@ router.patch('/:id', auth, async (req, res) => {
         monitor.is_active = !monitor.is_active
         const updated_monitor = await monitor.save()
         return res.status(200).json({
-            message: 'Monitor status toggled.',
-            is_active: updated_monitor.is_active
+            message: 'Monitor status toggled.'
         })
     } catch (error) {
         return res.status(500).json({
-            error: `Internal Server Error`
+            message: `Internal Server Error`
         })
     }
 })

@@ -43,7 +43,7 @@ export default function DashboardCard({
                 </div>
             </div>
 
-            <div className="space-y-2 rounded-2xl border border-white/10 bg-slate-700/35 p-3">
+            <div className="space-y-2 p-3">
                 <div className="flex items-center justify-between gap-3 text-xs text-slate-300">
                     <span>{subtitle}</span>
                     {progress !== null && <span>{progress}%</span>}
