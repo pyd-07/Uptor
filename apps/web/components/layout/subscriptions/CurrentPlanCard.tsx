@@ -10,7 +10,6 @@ type props = {
 export function CurrentPlanCard({prop}: {prop: props}) {
     return (
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 glass-card-hover from-slate-900/80 to-slate-800/80 backdrop-blur-xl p-8 shadow-2xl">
-            {/* Decorative gradient overlay */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl" />
 
             <div className="relative">
@@ -63,7 +62,7 @@ export function CurrentPlanCard({prop}: {prop: props}) {
                             <div className="rounded-lg bg-blue-500/10 p-2">
                                 <Clock className="h-4 w-4 text-blue-400" />
                             </div>
-                            <h4 className="text-white">Check Interval</h4>
+                            <h4 className="text-white">Minimun Check Interval</h4>
                         </div>
                         <div className="mb-2">
                             <span className="text-3xl text-white">5 min</span>
@@ -86,7 +85,7 @@ export function CurrentPlanCard({prop}: {prop: props}) {
                             </div>
                         </div>
                         <Progress value={prop.channelCount/2 * 100} className="h-2 bg-slate-700/80" />
-                        <p className="mt-2 text-sm text-slate-500">{2-prop.channelCount} channel available</p>
+                        <p className="mt-2 text-sm text-slate-500">{2-prop.channelCount} channel under development.</p>
                     </div>
                 </div>
 

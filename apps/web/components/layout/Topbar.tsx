@@ -63,10 +63,6 @@ function More() {
                     <Image src="/topbar/about.png" alt="About Us" width={18} height={18} />
                 </button>
             </Link>
-
-            <button className="bg-slate-950/80 border border-white/10 rounded-2xl p-2.5 hover:bg-slate-900 transition">
-                <Image src="/alert.png" alt="notifications" width={18} height={18} />
-            </button>
             
             <details className="relative">
                 <summary className="list-none cursor-pointer bg-slate-950/80 border border-white/10 rounded-2xl p-2 hover:bg-slate-900 transition [&::-webkit-details-marker]:hidden">
