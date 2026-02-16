@@ -7,7 +7,7 @@ import {api} from "@/lib/api";
 import { buildMonitorStats, MonitorFormat } from '@/lib/monitors';
 import { PageStats } from '@/lib/monitors';
 import Link from 'next/link';
-import { Activity, AlertTriangle, Gauge, PauseCircle, Plus, RefreshCcw } from 'lucide-react';
+import { Activity, XCircle, Gauge, PauseCircle, Plus, RefreshCcw } from 'lucide-react';
 
 
 export default function Page() {
@@ -105,7 +105,7 @@ function DashboardContent({stats, monitors}: { stats: PageStats, monitors: Monit
                     number={stats.down}
                     subtitle={`${stats.total} total monitors`}
                     color={"text-red-500"}
-                    icon={AlertTriangle}
+                    icon={XCircle}
                     progressTotal={stats.total}
                 />
                 <DashboardCard
@@ -120,7 +120,7 @@ function DashboardContent({stats, monitors}: { stats: PageStats, monitors: Monit
                     name="Average Latency"
                     number={stats.avg_latency}
                     subtitle={stats.total > 0 ? `Across ${stats.total} monitored endpoints` : 'No latency data yet'}
-                    color={stats.avg_latency>300?"text-red-500":"text-green-500"}
+                    color={stats.avg_latency>300?"text-red-500":"text-cyan-500"}
                     icon={Gauge}
                     suffix="ms"
                 />
@@ -163,7 +163,7 @@ function ErrorState({ message }: { message: string }) {
     return (
         <div className="flex flex-col items-center justify-center h-72 rounded-3xl glass-card text-center px-6 space-y-3">
             <div className="inline-flex size-12 items-center justify-center rounded-full bg-red-500/15 border border-red-400/30">
-                <AlertTriangle className="size-5 text-red-400" />
+                <XCircle className="size-5 text-red-400" />
             </div>
             <div className="text-red-400 text-lg font-semibold">
                 Something went wrong

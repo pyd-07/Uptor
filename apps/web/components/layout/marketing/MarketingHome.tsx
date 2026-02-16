@@ -36,7 +36,7 @@ export default function MarketingHome() {
       <div className="pointer-events-none absolute top-20 right-0 h-72 w-72 rounded-full bg-orange-500/20 blur-3xl" />
 
       <section className="mx-auto w-full max-w-6xl space-y-6">
-        <header className="glass-card rounded-3xl p-4 sm:p-6 animate-in fade-in-0 slide-in-from-bottom-4 duration-700">
+        <header className="glass-card rounded-3xl p-4 sm:p-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div className="space-y-3">
               <p className="text-xs uppercase tracking-[0.25em] text-cyan-300">
@@ -76,7 +76,7 @@ export default function MarketingHome() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 animate-in fade-in-0 slide-in-from-bottom-4 duration-700 delay-150">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <MetricTile label="Checks Running" value="24/7" />
           <MetricTile label="Detection Events" value="< 1m" />
           <MetricTile label="Single Source View" value="1 dashboard" />
@@ -86,7 +86,7 @@ export default function MarketingHome() {
           {featureItems.map((feature) => (
             <article
               key={feature.title}
-              className="glass-card rounded-3xl p-5 transition hover:border-cyan-300/30 animate-in fade-in-0 slide-in-from-bottom-4 duration-700"
+              className="glass-card rounded-3xl p-5 transition hover:border-cyan-300/30"
             >
               <div className="mb-4 inline-flex rounded-xl border border-cyan-300/30 bg-cyan-400/10 p-2">
                 <feature.icon className="size-5 text-cyan-200" />
@@ -97,7 +97,7 @@ export default function MarketingHome() {
           ))}
         </section>
 
-        <section className="glass-card rounded-3xl p-6 sm:p-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-700 delay-200">
+        <section className="glass-card rounded-3xl p-6 sm:p-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-orange-300">
@@ -126,7 +126,7 @@ export default function MarketingHome() {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-cyan-300/20 bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950 p-6 sm:p-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-700 delay-300">
+        <section className="rounded-3xl border border-cyan-300/20 bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950 p-6 sm:p-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="space-y-2">
               <h4 className="text-2xl font-semibold">Start monitoring in minutes</h4>

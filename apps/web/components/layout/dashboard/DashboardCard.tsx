@@ -32,7 +32,7 @@ export default function DashboardCard({
                 <div className="text-white/70 text-sm tracking-wide uppercase">
                     {name}
                 </div>
-                <div className={`inline-flex items-center justify-center size-9 rounded-xl bg-slate-700/70 border border-white/10 ${color}`}>
+                <div className={`inline-flex items-center justify-center size-9 rounded-3xl border border-white/10 ${color}`}>
                     <Icon className="size-4" />
                 </div>
             </div>

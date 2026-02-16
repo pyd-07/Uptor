@@ -10,7 +10,7 @@ function StatsCard({ title, value, icon }: StatsCardProps) {
     return (
         <div className="glass-card glass-card-hover rounded-3xl p-5">
             <div className="flex items-start justify-between mb-3">
-                <div className="p-2.5 rounded-xl bg-primary/10">
+                <div className="p-2.5 rounded-3xl border border-white/10">
                     {icon}
                 </div>
             </div>
