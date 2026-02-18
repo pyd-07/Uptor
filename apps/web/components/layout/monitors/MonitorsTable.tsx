@@ -3,6 +3,8 @@ import { useState } from "react";
 import MonitorCard from "@/components/layout/monitors/MonitorCard";
 import { api } from "@/lib/api";
 import { MonitorFormat } from "@/lib/monitors";
+import {formatResponseStatusCode, formatTimestamp, formatResponseTimeColor} from "@/lib/utils";
+import { ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 
 function getErrorMessage(error: unknown, fallback: string) {
@@ -20,7 +22,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 }
 
 function getStatusMeta(monitor: MonitorFormat) {
-    const label = !monitor.is_active ? "PAUSED" : monitor.last_status.toUpperCase();
+    const label = !monitor.is_active ? "INACTIVE" : monitor.last_status.toUpperCase();
     const tone = !monitor.is_active
         ? "border-slate-500/30 bg-slate-500/10 text-slate-200"
         : monitor.last_status === "up"
@@ -32,7 +34,7 @@ function getStatusMeta(monitor: MonitorFormat) {
     return { label, tone };
 }
 
-export function MonitorsTable({ monitors, setMonitors } 
+export function MonitorsTable({ monitors, setMonitors }
     : { monitors: MonitorFormat[], setMonitors: React.Dispatch<React.SetStateAction<MonitorFormat[]>>}
  ) {
     const [togglingId, setTogglingId] = useState<string | null>(null);
@@ -88,8 +90,9 @@ export function MonitorsTable({ monitors, setMonitors }
                         <tr className="border-b border-white/5">
                             <th className="px-6 py-4 text-left text-sm">Monitor</th>
                             <th className="px-6 py-4 text-left text-sm">Status</th>
-                            <th className="px-6 py-4 text-left text-sm">Last Checked</th>
+                            <th className="px-6 py-4 text-left text-sm">Status Code</th>
                             <th className="px-6 py-4 text-left text-sm">Response Time</th>
+                            <th className="px-6 py-4 text-left text-sm">Last Checked</th>
                             <th className="px-6 py-4 text-left text-sm">Interval</th>
                             <th className="px-6 py-4 text-left text-sm">Timeout</th>
                             <th className="px-6 py-4 text-left text-sm">Activity</th>
@@ -107,7 +110,7 @@ export function MonitorsTable({ monitors, setMonitors }
                             return (
                                 <tr
                                     key={monitor._id}
-                                    className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group"
+                                    className="border-b border-white/5 hover:bg-white/[0.02] transition-colors glass-card-hover"
                                 >
                                     <td className="px-6 py-4">
                                         <div className="font-medium text-gray-300">
@@ -120,6 +123,7 @@ export function MonitorsTable({ monitors, setMonitors }
                                             className="text-sm text-muted-foreground truncate max-w-[300px] hover:underline underline-offset-4"
                                         >
                                             {monitor.url}
+                                            <ExternalLink className="size-3.5 shrink-0" />
                                         </a>
                                     </td>
 
@@ -129,15 +133,19 @@ export function MonitorsTable({ monitors, setMonitors }
                                         </span>
                                     </td>
 
-                                    <td className="px-6 py-4 text-sm text-muted-foreground">
-                                        {monitor.last_checked_at || "-"}
+                                    <td className={`px-6 py-4 text-left text-sm ${formatResponseStatusCode(monitor.status_code)}`}>
+                                        {monitor.status_code}
                                     </td>
 
-                                    <td className="px-6 py-4 text-sm">
+                                    <td className={`px-6 py-4 text-left text-sm ${formatResponseTimeColor(monitor.response_time_ms, monitor.is_active)}`}>
                                         {monitor.response_time_ms ? `${monitor.response_time_ms} ms` : "-"}
                                     </td>
 
-                                    <td className="px-6 py-4 text-sm text-muted-foreground">
+                                    <td className="px-6 py-4 text-sm">
+                                        {formatTimestamp(monitor.last_checked_at || "-")}
+                                    </td>
+
+                                    <td className={`px-6 py-4 text-left text-sm`}>
                                         {monitor.interval_sec ? `${monitor.interval_sec} sec` : "-"}
                                     </td>
 
@@ -147,7 +155,8 @@ export function MonitorsTable({ monitors, setMonitors }
 
                                     <td className="px-6 py-4 text-sm text-muted-foreground">
                                         <button
-                                            onClick={()=>toggleActivity}
+                                            type={"button"}
+                                            onClick={()=>toggleActivity(monitor._id)}
                                             disabled={isBusy}
                                             className="inline-flex w-full items-center justify-center gap-1.5 rounded-3xl border border-white/15 bg-slate-800/70 px-2 py-1 text-white transition hover:bg-slate-700/80 disabled:cursor-not-allowed disabled:opacity-60" >
 
@@ -157,7 +166,7 @@ export function MonitorsTable({ monitors, setMonitors }
 
                                     <td className="px-6 py-4 text-sm text-white hover:bg-slate-800/50">
                                         <button
-                                            onClick={()=>handleDelete}
+                                            onClick={()=>handleDelete(monitor._id)}
                                             disabled={isBusy}
                                             className="inline-flex w-full items-center justify-center gap-1.5 rounded-3xl border border-red-500/30 bg-red-500/15 px-2 py-1 text-red-200 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
 

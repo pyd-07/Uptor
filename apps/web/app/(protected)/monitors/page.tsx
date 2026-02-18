@@ -37,6 +37,8 @@ export default function MonitorPage() {
             }
         }
         void fetchData()
+        const intervalId = setInterval(fetchData, 60*1000)
+        return () => clearInterval(intervalId)
     }, []);
 
     return (

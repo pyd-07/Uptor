@@ -7,37 +7,25 @@ import { useRouter } from "next/navigation";
 
 export default function Topbar() {
     return (
-        <div className="fixed top-0 left-0 w-full flex items-center justify-between gap-4 p-6 mb-1">
-            <Logo />
-            <SearchBar />
-            <More />
+        <div className="fixed top-0 left-0 z-40 w-full py-3">
+            <div className="flex w-full items-center justify-between px-4">
+                <MyMessage />
+                <More />
+            </div>
         </div>
     );
 }
 
-function Logo() {
-    return (
-        <div>
 
-        </div>
-    )
-}
-
-function SearchBar() {
+function MyMessage() {
     return (
-        <div className="flex flex-1 max-w-md">
-            <div className="flex items-center gap-2 w-full bg-slate-950/80 border border-white/10 rounded-2xl px-4 py-2">
-                <Image src="/streetlights.png" alt="search" width={18} height={18} />
-                <input
-                    className="hidden md:block bg-transparent outline-none text-white placeholder:text-white/40 text-sm  w-2/3 md:w-full"
-                    placeholder="Search monitors..."
-                />
-                <input
-                    className="md:hidden bg-transparent outline-none text-white placeholder:text-white/40 text-sm  w-2/3 md:w-full"
-                    placeholder="Search..."
-                />
+            <div className="flex min-w-0 items-center gap-3 rounded-full border border-white/10 glass-card-hover sm:max-w-xl sm:px-4 sm:py-2.5">
+                <div className="min-w-0">
+                    <p className="truncate text-xs text-gray-200 sm:text-sm">
+                        Built with love, logs, docs, and occasional despair.
+                    </p>
+                </div>                
             </div>
-        </div>
     )
 }
 
@@ -57,9 +45,9 @@ function More() {
     }
 
     return (
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3 justify-end">
             <Link href="/about">
-                <button className="bg-slate-950/80 border border-white/10 rounded-2xl p-2.5 hover:bg-slate-900 transition">
+                <button className="rounded-2xl border border-white/10 bg-slate-950/80 p-2.5 transition hover:bg-slate-900">
                     <Image src="/topbar/about.png" alt="About Us" width={18} height={18} />
                 </button>
             </Link>

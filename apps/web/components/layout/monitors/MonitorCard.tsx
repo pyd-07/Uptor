@@ -1,5 +1,5 @@
 import { MonitorFormat } from "@/lib/monitors";
-import { Activity, Clock3, ExternalLink, Pause, Play, Timer, Trash2 } from "lucide-react";
+import { Activity, Clock3, ExternalLink, Timer } from "lucide-react";
 
 type MonitorCardProps = {
     monitor: MonitorFormat;
@@ -78,14 +78,14 @@ function MonitorCard({ monitor, onToggleActivity, onDelete, isToggling = false, 
                 <button
                     onClick={onToggleActivity}
                     disabled={isBusy}
-                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-white/15 bg-slate-800/70 px-2.5 py-2 text-white transition hover:bg-slate-700/80 disabled:cursor-not-allowed disabled:opacity-60" >
+                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-white/15 bg-slate-800/70 px-2.5 py-2 text-white transition hover:bg-slate-700/80 disabled:cursor-not-allowed disabled:opacity-60" >
 
                     {isToggling ? "Updating..." : monitor.is_active ? "Pause" : "Resume"}
                 </button>
                 <button
                     onClick={onDelete}
                     disabled={isBusy}
-                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/15 px-2.5 py-2 text-red-200 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-red-500/30 bg-red-500/15 px-2.5 py-2 text-red-200 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
 
                 >
                     {isDeleting ? "Deleting..." : "Delete"}

@@ -6,6 +6,9 @@ const { Alert } = require("../backend/Models/Alert")
 const { Monitor } = require("../backend/Models/Monitor")
 const { MonitorCheck } = require("../backend/Models/MonitorCheck")
 
+require("dotenv").config({ path: "../.env" })
+
+
 const limit = pLimit(20)
 let running = false
 
@@ -47,7 +50,8 @@ function startWorker() {
                             next_check_at: new Date(
                                 result.checked_at.getTime() + monitor.interval_sec * 1000
                             ),
-                            response_time_ms: result.response_time_ms
+                            response_time_ms: result.response_time_ms,
+                            status_code: result.status_code
                         })
 
                         let transition = null

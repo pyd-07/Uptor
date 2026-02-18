@@ -9,10 +9,9 @@ router.get('/summary', auth, async(req, res)=>{
     try{
         const monitors = await Monitor.find({organizationId: org_id})
 
-        const slowest_3 = monitors
+        const slowest_sort = monitors
         .filter((monitor)=>monitor.response_time_ms!=null)
-        .sort((a, b) => b.response_time_ms - a.response_time_ms)
-        .slice(0, 3);
+        .sort((a, b) => b.response_time_ms - a.response_time_ms);
 
 
         return res.status(200).json(monitors);

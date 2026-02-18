@@ -16,14 +16,12 @@ app.use(cookieParser());
 const authRoutes = require('./Routes/auth/auth');
 const monitorRoutes = require('./Routes/monitors/monitors');
 const alertRoutes = require('./Routes/alerts/alerts');
-const billingRoutes = require('./Routes/billing/status');
 const organizationRoutes = require('./Routes/organization/organization');
 const dashboardRoutes = require('./Routes/dashboard/dashboard');
 
 app.use("/auth", authRoutes);
 app.use("/monitors", monitorRoutes);
 app.use("/alerts", alertRoutes);
-app.use("/billing", billingRoutes);
 app.use("/organization", organizationRoutes);
 app.use("/", dashboardRoutes);
 

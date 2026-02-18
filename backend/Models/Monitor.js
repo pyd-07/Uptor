@@ -21,7 +21,10 @@ const monitorSchema = new mongoose.Schema(
       enum: ["up", "down", "unknown"],
       default: "unknown"
     },
-
+    status_code: {
+      type: Number,
+      default: 000
+    },
     last_checked_at: { type: Date, default: null },
     next_check_at: { type: Date, default: () => new Date(Date.now() + 300 * 1000) },
     response_time_ms: {type:Number, default: null},

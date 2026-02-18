@@ -1,11 +1,12 @@
 "use client"
 
-import {useState, useEffect} from 'react'
+import {useState, useEffect} from 'react';
 import DashboardCard from "@/components/layout/dashboard/DashboardCard";
 import DashboardTable from "@/components/layout/dashboard/DashboardTable";
 import {api} from "@/lib/api";
 import { buildMonitorStats, MonitorFormat } from '@/lib/monitors';
 import { PageStats } from '@/lib/monitors';
+import {formatTimestamp} from "@/lib/utils";
 import Link from 'next/link';
 import { Activity, XCircle, Gauge, PauseCircle, Plus, RefreshCcw } from 'lucide-react';
 
@@ -35,6 +36,8 @@ export default function Page() {
             }
         }
         void fetchData()
+        const intervalId = setInterval(fetchData, 60*1000)
+        return () => clearInterval(intervalId)
     }, [])
 
 
@@ -120,7 +123,7 @@ function DashboardContent({stats, monitors}: { stats: PageStats, monitors: Monit
                     name="Average Latency"
                     number={stats.avg_latency}
                     subtitle={stats.total > 0 ? `Across ${stats.total} monitored endpoints` : 'No latency data yet'}
-                    color={stats.avg_latency>300?"text-red-500":"text-cyan-500"}
+                    color={stats.avg_latency>2000?"text-red-500":(stats.avg_latency>1000?"":"text-cyan-500")}
                     icon={Gauge}
                     suffix="ms"
                 />
@@ -202,12 +205,4 @@ function EmptyState() {
             </Link>
         </div>
     )
-}
-
-function formatTimestamp(value: string) {
-    const parsedDate = new Date(value)
-    return parsedDate.toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-    })
 }

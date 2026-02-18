@@ -117,7 +117,7 @@ export default function AddMonitorForm() {
             <Input
               id="interval-sec"
               type="number"
-              min={30}
+              min={300}
               max={3600}
               value={draft.interval_sec}
               onChange={(event) => updateField("interval_sec", parseInt(event.target.value))}

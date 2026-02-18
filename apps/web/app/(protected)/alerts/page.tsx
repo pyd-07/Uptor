@@ -78,8 +78,8 @@ export default function AlertsPage() {
         <Image src="/streetlights.png" alt="Streetlights" width={48} height={12} />
       </header>
 
-      <div className="pt-6 overflow-y-auto no-scrollbar">
-        <div className="bg-slate-900 rounded-3xl overflow-y-auto no-scrollbar glass-card">
+      <div className="pt-6">
+        <div className="bg-slate-900 rounded-3xl glass-card">
           <div className="px-6 py-4 border-b border-white/5">
             <h2 className="text-lg font-semibold text-gray-400">Alert History</h2>
           </div>
@@ -100,7 +100,7 @@ export default function AlertsPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full overflow-y-auto">
                 <thead>
                   <tr className="border-b border-white/5">
                     <th className="px-6 py-4 text-left text-sm">Type</th>
@@ -109,7 +109,7 @@ export default function AlertsPage() {
                     <th className="px-6 py-4 text-right text-sm">Sent</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className={"overflow-y-auto"}>
                   {alerts.map((alert) => (
                     <tr
                       key={alert._id}

@@ -8,6 +8,7 @@ export type MonitorFormat = {
     interval_sec: number | null;
     timeout_ms: number | null;
     is_active: boolean;
+    status_code: number;
 }
 
 
@@ -72,7 +73,7 @@ export function validateMonitorDraft(draft: MonitorFormDraft): Record<string, st
   }
 
   if (intervalSec < 300 || intervalSec > 3600) {
-    errors.intervalSec = "Interval must be between 30 and 3600 seconds.";
+    errors.intervalSec = "Interval must be between 300 and 3600 seconds.";
   }
 
   if (timeoutMs < 1000 || timeoutMs > 30000) {
