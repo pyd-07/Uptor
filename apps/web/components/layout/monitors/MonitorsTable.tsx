@@ -120,7 +120,7 @@ export function MonitorsTable({ monitors, setMonitors }
                                             href={monitor.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-sm text-muted-foreground truncate max-w-[300px] hover:underline underline-offset-4"
+                                            className="text-sm text-muted-foreground truncate max-w-[300px] hover:underline underline-offset-4 flex items-center"
                                         >
                                             {monitor.url}
                                             <ExternalLink className="size-3.5 shrink-0" />

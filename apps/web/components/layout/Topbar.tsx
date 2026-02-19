@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 export default function Topbar() {
     return (
         <div className="fixed top-0 left-0 z-40 w-full py-3">
-            <div className="flex w-full items-center justify-between px-4">
+            <div className="ml-4 flex min-w-0 items-center justify-between gap-2 sm:gap-3">
                 <MyMessage />
                 <More />
             </div>
@@ -19,13 +19,12 @@ export default function Topbar() {
 
 function MyMessage() {
     return (
-            <div className="flex min-w-0 items-center gap-3 rounded-full border border-white/10 glass-card-hover sm:max-w-xl sm:px-4 sm:py-2.5">
-                <div className="min-w-0">
-                    <p className="truncate text-xs text-gray-200 sm:text-sm">
-                        Built with love, logs, docs, and occasional despair.
-                    </p>
-                </div>                
-            </div>
+        <div className="flex min-w-0 flex-1 items-center rounded-full border border-white/10 glass-card-hover px-3 py-2 sm:max-w-xl sm:px-4 sm:py-2.5">
+            <p className="truncate text-[11px] leading-4 text-gray-200 sm:text-sm">
+                <span className="sm:hidden">Built with love, logs, and docs.</span>
+                <span className="hidden sm:inline">Built with love, logs, docs, and occasional despair.</span>
+            </p>
+        </div>
     )
 }
 
@@ -45,18 +44,18 @@ function More() {
     }
 
     return (
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3 justify-end">
+        <div className="mr-4 flex shrink-0 items-center gap-2 sm:gap-3 justify-end">
             <Link href="/about">
-                <button className="rounded-2xl border border-white/10 bg-slate-950/80 p-2.5 transition hover:bg-slate-900">
-                    <Image src="/topbar/about.png" alt="About Us" width={18} height={18} />
+                <button className="flex size-9 items-center justify-center rounded-xl border border-white/10 bg-slate-950/80 transition hover:bg-slate-900 sm:size-10 sm:rounded-2xl">
+                    <Image src="/topbar/about.png" alt="About Us" width={17} height={17} />
                 </button>
             </Link>
             
             <details className="relative">
-                <summary className="list-none cursor-pointer bg-slate-950/80 border border-white/10 rounded-2xl p-2 hover:bg-slate-900 transition [&::-webkit-details-marker]:hidden">
-                    <Image src="/user_pfp.png" alt="profile" width={24} height={24} className="rounded-full" />
+                <summary className="flex size-9 list-none cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-slate-950/80 transition hover:bg-slate-900 [&::-webkit-details-marker]:hidden sm:size-10 sm:rounded-2xl">
+                    <Image src="/user_pfp.png" alt="profile" width={22} height={22} className="rounded-full" />
                 </summary>
-                <div className="absolute right-0 mt-2 w-44 rounded-2xl border border-white/10 bg-slate-950/95 p-2 shadow-xl z-50">
+                <div className="absolute right-0 mt-2 z-50 w-40 rounded-2xl border border-white/10 bg-slate-950/95 p-2 shadow-xl sm:w-44">
                     <div className="px-3 py-2 text-xs text-white/60">Account</div>
 
                     <button

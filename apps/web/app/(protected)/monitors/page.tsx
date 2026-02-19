@@ -28,7 +28,6 @@ export default function MonitorPage() {
                     "/monitors",
                 )
                 console.log(res.data)
-                const builtStats = buildMonitorStats(res.data)
                 setMonitors(res.data)
             } catch {
                 setError("Failed to load monitors.")

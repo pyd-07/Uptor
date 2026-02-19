@@ -129,7 +129,7 @@ function DashboardContent({stats, monitors}: { stats: PageStats, monitors: Monit
                 />
             </div>
 
-            <div className="hidden lg:block rounded-3xl overflow-auto no-scrollbar glass-card">
+            <div className="rounded-3xl overflow-hidden glass-card">
                 <div className="border-b border-white/10 px-5 py-4 sm:px-6 sm:py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className={"text-white font-semibold text-lg"}>
@@ -164,22 +164,13 @@ function LoadingState() {
 
 function ErrorState({ message }: { message: string }) {
     return (
-        <div className="flex flex-col items-center justify-center h-72 rounded-3xl glass-card text-center px-6 space-y-3">
-            <div className="inline-flex size-12 items-center justify-center rounded-full bg-red-500/15 border border-red-400/30">
-                <XCircle className="size-5 text-red-400" />
-            </div>
-            <div className="text-red-400 text-lg font-semibold">
+        <div className="flex flex-col items-center justify-center h-64 text-center space-y-3">
+            <div className="text-red-500 text-lg font-semibold">
                 Something went wrong
             </div>
             <div className="text-sm text-gray-400">
                 {message}
             </div>
-            <button
-                onClick={() => window.location.reload()}
-                className="rounded-xl border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/10 transition"
-            >
-                Retry
-            </button>
         </div>
     )
 }

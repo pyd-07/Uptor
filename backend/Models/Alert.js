@@ -17,7 +17,7 @@ const alertSchema = new mongoose.Schema(
     result: {type: Object, required:true},
     status: {type: String, enum: ["pending", "sent", "processing", "failed"], default:"pending"},
 
-    sent_via: [{ type: String, enum: ["email", "telegram"], default:[] }],
+    sent_via: {type: String, default:"Email"},
     sent_at: { type: Date, default: null },
     tries: { type: Number, default: 0 }
   }

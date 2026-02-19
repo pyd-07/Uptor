@@ -4,8 +4,12 @@ require("dotenv").config()
 
 module.exports = async function connectDB() {
   try {
-    const uri = process.env.MONGODB_URI;
-    await mongoose.connect(uri);
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      retryWrites: true,
+      maxPoolSize: 10,
+    });
     console.log("MongoDB connected");
   } catch (err) {
     console.error(err);

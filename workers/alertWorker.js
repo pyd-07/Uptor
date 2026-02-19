@@ -1,5 +1,6 @@
 const pLimit = require('p-limit').default;
 const connectDB = require('../db');
+require("dotenv").config({ path: "../.env" })
 const { Alert } = require('../backend/Models/Alert')
 const {Monitor} = require('../backend/Models/Monitor')
 const notifyMail = require('../services/alertService')
@@ -9,7 +10,7 @@ async function getpendingAlerts() {
 }
 
 let running = false;
-const limit = pLimit(20).default;
+const limit = pLimit(20)
 
 function startWorker() {
   setInterval(async () => {

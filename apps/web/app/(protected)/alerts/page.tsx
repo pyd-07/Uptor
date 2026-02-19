@@ -5,32 +5,18 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
 
-type AlertType = "down" | "recovery" | "unknown" | string;
+import {
+  RawAlert,
+  AlertType,
+  AlertDeliveryStatus,
+  formatSentAt,
+  formatSentVia,
+  getAlertMonitor,
+} from "@/lib/alerts";
 
-type AlertMonitor = {
-  _id?: string;
-  name?: string;
-  url?: string;
-};
-
-type RawAlert = {
-  _id?: string;
-  type: AlertType;
-  sent_via?: string[];
-  sent_at?: string | null;
-  monitorId?: string | AlertMonitor;
-};
-
-type AlertRow = {
-  _id: string;
-  type: AlertType;
-  sent_via: string[];
-  sent_at: string | null;
-  monitor: AlertMonitor | null;
-};
 
 export default function AlertsPage() {
-  const [alerts, setAlerts] = useState<AlertRow[]>([]);
+  const [alerts, setAlerts] = useState<RawAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -41,20 +27,7 @@ export default function AlertsPage() {
           params: { limit: 50 },
         });
 
-        const normalized = (Array.isArray(res.data) ? res.data : []).map((alert, index) => {
-          const populatedMonitor =
-            alert.monitorId && typeof alert.monitorId === 'object' ? alert.monitorId : null;
-
-          return {
-            _id: alert._id ?? `alert-${index}`,
-            type: alert.type,
-            sent_via: Array.isArray(alert.sent_via) ? alert.sent_via : [],
-            sent_at: alert.sent_at ?? null,
-            monitor: populatedMonitor,
-          };
-        });
-
-        setAlerts(normalized);
+        setAlerts(Array.isArray(res.data) ? res.data : []);
       } catch {
         setError('Failed to load alerts.');
       } finally {
@@ -66,7 +39,7 @@ export default function AlertsPage() {
   }, []);
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto no-scrollbar pb-8">
       <header className="flex justify-between items-center w-full mt-0">
         <div>
           <h3 className="scroll-m-20 text-2xl font-semibold">Alerts</h3>
@@ -106,41 +79,49 @@ export default function AlertsPage() {
                     <th className="px-6 py-4 text-left text-sm">Type</th>
                     <th className="px-6 py-4 text-left text-sm">Monitor</th>
                     <th className="px-6 py-4 text-left text-sm">Channels</th>
+                    <th className="px-6 py-4 text-left text-sm">Mail Status</th>
                     <th className="px-6 py-4 text-right text-sm">Sent</th>
                   </tr>
                 </thead>
                 <tbody className={"overflow-y-auto"}>
-                  {alerts.map((alert) => (
+                  {alerts.map((alert, index) => {
+                    const monitor = getAlertMonitor(alert.monitorId);
+
+                    return (
                     <tr
-                      key={alert._id}
-                      className="border-b border-white/5 hover:bg-white/[0.02] transition-colors glass-card-hover"
+                      key={alert._id ?? `alert-${index}`}
+                      className="border-b border-white/5 hover:bg-white/[0.02] glass-card-hover"
                     >
                       <td className="px-6 py-4">{alertBadge(alert.type)}</td>
                       <td className="px-6 py-4">
                         <div className="font-medium text-gray-300">
-                          {alert.monitor?.name ?? 'Deleted monitor'}
+                          {monitor?.name ?? 'Deleted monitor'}
                         </div>
-                        {alert.monitor?.url ? (
+                        {monitor?.url ? (
                           <a
-                            href={alert.monitor.url}
+                            href={monitor.url}
                             className="text-sm text-muted-foreground truncate max-w-[300px] inline-block"
                             target="_blank"
                             rel="noreferrer"
                           >
-                            {alert.monitor.url}
+                            {monitor.url}
                           </a>
                         ) : (
                           <span className="text-sm text-muted-foreground">No URL</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-sm text-muted-foreground">
-                        {alert.sent_via.length > 0 ? alert.sent_via.join(', ') : 'Pending'}
+                        {formatSentVia(alert.sent_via)}
+                      </td>
+                      <td className="px-6 py-4">
+                        {deliveryStatusBadge(alert.status ?? null)}
                       </td>
                       <td className="px-6 py-4 text-right text-sm text-muted-foreground">
-                        {formatSentAt(alert.sent_at)}
+                        {formatSentAt(alert.sent_at, alert.status ?? null)}
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -153,7 +134,7 @@ export default function AlertsPage() {
 
 function alertBadge(type: AlertType) {
   if (type === "down") {
-    return <Badge variant="destructive">DOWN</Badge>;
+    return <Badge className={"bg-red-500 text-white border-none"}>DOWN</Badge>;
   }
   if (type === "recovery") {
     return <Badge className="bg-green-500/20 text-green-300 border-none">RECOVERY</Badge>;
@@ -161,15 +142,24 @@ function alertBadge(type: AlertType) {
   return <Badge className="bg-orange-500/20 text-orange-300 border-none">UNKNOWN</Badge>;
 }
 
-function formatSentAt(sentAt: string | null) {
-  if (!sentAt) {
-    return "Pending";
+function deliveryStatusBadge(status: AlertDeliveryStatus | null) {
+  const normalizedStatus = (status ?? "").toLowerCase();
+
+  if (normalizedStatus === "failed") {
+    return <Badge className="bg-red-500/20 text-red-300 border-none">FAILED</Badge>;
   }
 
-  const date = new Date(sentAt);
-  if (Number.isNaN(date.getTime())) {
-    return "Unknown";
+  if (normalizedStatus === "pending") {
+    return <Badge className="bg-amber-500/20 text-amber-300 border-none">PENDING</Badge>;
   }
 
-  return date.toLocaleString();
+  if (normalizedStatus === "processing") {
+    return <Badge className="bg-blue-500/20 text-blue-300 border-none">PROCESSING</Badge>;
+  }
+
+  if (normalizedStatus === "sent") {
+    return <Badge className="bg-green-500/20 text-green-300 border-none">SENT</Badge>;
+  }
+
+  return <Badge className="bg-slate-500/20 text-slate-300 border-none">UNKNOWN</Badge>;
 }
