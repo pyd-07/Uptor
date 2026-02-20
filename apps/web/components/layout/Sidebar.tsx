@@ -88,9 +88,9 @@ function Navigations() {
                     <Link key={item.label} href={item.href} className="group">
                         <li className="
                             flex items-center
-                            justify-center md:justify-start
+                            justify-center py-3 md:justify-start
                             hover:bg-slate-900 rounded-xl
-                            p-2 transition-all
+                            md:p-2 transition-all
                         ">
                             <div className="flex items-center justify-center w-8 h-8">
                                 <Image
@@ -98,7 +98,7 @@ function Navigations() {
                                     alt={item.label}
                                     width={24}
                                     height={24}
-                                    className="object-contain"
+
                                 />
                             </div>
                             <span className="hidden md:block text-sm ml-3 truncate">

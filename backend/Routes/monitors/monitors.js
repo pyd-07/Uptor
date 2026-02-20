@@ -26,7 +26,7 @@ router.post('/',auth, async (req, res) => {
             url,
             interval_sec: intervalSec,
             timeout_ms: timeout_ms || 5000,
-            next_check_at: new Date(Date.now() + intervalSec * 1000)
+            next_check_at: new Date()
         })
         await monitor.save()
         const updatedOrg = await Organization.findByIdAndUpdate(req.org_id, {

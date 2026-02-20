@@ -30,7 +30,7 @@ function startWorker() {
                     )
                     if(!claimed) return;
                     try {
-                        const monitor = await Monitor.findById(alert.monitorId)
+                        const monitor = await Monitor.findOne({ _id: alert.monitorId })
                         if (!monitor) {
                             await Alert.findByIdAndUpdate(alert._id, {
                             status: "failed",
@@ -41,6 +41,7 @@ function startWorker() {
                         const res = await notifyMail(alert.type, monitor)
                         const updated = await Alert.findByIdAndUpdate(alert._id,{
                             status: res?"sent":"pending",
+                            sent_at : new Date(),
                             $inc: {tries:1}
                             }, 
                             {new:true}
