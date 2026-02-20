@@ -14,6 +14,7 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const connectDB = require('../db');
 const app = express();
+app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(cors({
@@ -21,7 +22,6 @@ app.use(cors({
   credentials: true
 }));
 app.use(cookieParser());
-app.set("trust proxy", 1);
 
 const authRoutes = require('./Routes/auth/auth');
 const monitorRoutes = require('./Routes/monitors/monitors');
