@@ -1,4 +1,3 @@
-require("dotenv").config({ path: "../.env" })
 process.on("unhandledRejection", (err) => {
     console.error("[FATAL] Unhandled Rejection:", err)
 })
@@ -9,7 +8,6 @@ process.on("uncaughtException", (err) => {
 })
 
 const pLimit = require('p-limit').default;
-const connectDB = require('../db');
 const { Alert } = require('../backend/Models/Alert')
 const {Monitor} = require('../backend/Models/Monitor')
 const notifyMail = require('../services/alertService')
@@ -22,6 +20,7 @@ let running = false;
 const limit = pLimit(20)
 
 function startWorker() {
+    console.log("Started Alert Worker");
   setInterval(async () => {
     if(running) return;
     running = true;
@@ -77,12 +76,6 @@ function startWorker() {
   }, 10_000);
 }
 
-connectDB()
-.then(() => {
-    console.log("Alert worker connected to DB")
-    startWorker()
-})
-.catch((err) => {
-    console.error("Alert worker failed to connect to DB:", err)
-    process.exit(1)
-})
+startWorker()
+
+module.exports = {}

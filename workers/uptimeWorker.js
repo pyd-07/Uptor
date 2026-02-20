@@ -1,4 +1,3 @@
-require("dotenv").config({ path: "../.env" })
 process.on("unhandledRejection", (err) => {
     console.error("[FATAL] Unhandled Rejection:", err)
 })
@@ -9,7 +8,6 @@ process.on("uncaughtException", (err) => {
 })
 
 const pLimit = require("p-limit").default
-const connectDB = require("../db")
 const checkMonitor = require("../services/httpCheckService")
 
 const { Alert } = require("../backend/Models/Alert")
@@ -27,6 +25,7 @@ async function getDueMonitors() {
 }
 
 function startWorker() {
+    console.log("Started Uptime Worker");
     setInterval(async () => {
         if (running) return
             running = true
@@ -97,12 +96,6 @@ async function storeAlert(type, monitorId) {
     await alert.save()
 }
 
-connectDB()
-.then(() => {
-    console.log("Uptime worker connected to DB")
-    startWorker()
-})
-.catch((err) => {
-    console.error("Uptime worker failed to connect to DB:", err)
-    process.exit(1)
-})
+startWorker()
+
+module.exports = {}

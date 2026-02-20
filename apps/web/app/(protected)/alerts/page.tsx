@@ -34,8 +34,11 @@ export default function AlertsPage() {
         setLoading(false);
       }
     };
-
     void fetchAlerts();
+    const intervalId = setInterval(fetchAlerts, 60*1000);
+    return () => {
+      clearInterval(intervalId);
+    }
   }, []);
 
   return (

@@ -1,4 +1,3 @@
-require("dotenv").config({path:'../.env'});
 process.on("unhandledRejection", (err) => {
   console.error("[FATAL] Unhandled Rejection:", err)
 })
@@ -71,6 +70,9 @@ async function startServer() {
     app.listen(PORT, ()=>{
       console.log("App is listening on port:", PORT);
     });
+
+    require("../workers/uptimeWorker")
+    require("../workers/alertWorker")
   } catch (err) {
     console.error("Failed to start server:", error);
     process.exit(1);
