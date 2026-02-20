@@ -15,14 +15,15 @@ const connectDB = require('../db');
 const app = express();
 app.set("trust proxy", 1);
 
-app.use(express.json());
 app.use(cors({
   origin: [
-      "http://localhost:3000",
-      process.env.FRONTEND_URL
-      ],
+    "http://localhost:3000",
+    process.env.FRONTEND_URL
+  ],
   credentials: true
 }));
+app.options("*", cors());
+app.use(express.json());
 app.use(cookieParser());
 
 const authRoutes = require('./Routes/auth/auth');
