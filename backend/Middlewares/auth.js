@@ -10,7 +10,6 @@ async function auth(req, res, next) {
         token = req.cookies.auth_token
     }
 
-    // 2️⃣ Fallback to Authorization header (API / CLI)
     if (!token && req.headers.authorization) {
         const parts = req.headers.authorization.split(" ")
         if (parts.length === 2 && parts[0] === "Bearer") {

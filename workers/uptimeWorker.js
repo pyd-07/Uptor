@@ -1,3 +1,13 @@
+require("dotenv").config({ path: "../.env" })
+process.on("unhandledRejection", (err) => {
+    console.error("[FATAL] Unhandled Rejection:", err)
+})
+
+process.on("uncaughtException", (err) => {
+    console.error("[FATAL] Uncaught Exception:", err)
+    process.exit(1)
+})
+
 const pLimit = require("p-limit").default
 const connectDB = require("../db")
 const checkMonitor = require("../services/httpCheckService")
@@ -5,9 +15,6 @@ const checkMonitor = require("../services/httpCheckService")
 const { Alert } = require("../backend/Models/Alert")
 const { Monitor } = require("../backend/Models/Monitor")
 const { MonitorCheck } = require("../backend/Models/MonitorCheck")
-
-require("dotenv").config({ path: "../.env" })
-
 
 const limit = pLimit(20)
 let running = false

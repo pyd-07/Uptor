@@ -1,10 +1,19 @@
-const express = require('express');
-const connectDB = require('../db');
-const cors = require('cors');
-const app = express();
-const cookieParser = require("cookie-parser");
-
 require("dotenv").config({path:'../.env'});
+process.on("unhandledRejection", (err) => {
+  console.error("[FATAL] Unhandled Rejection:", err)
+})
+
+process.on("uncaughtException", (err) => {
+  console.error("[FATAL] Uncaught Exception:", err)
+  process.exit(1)
+})
+
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
+const connectDB = require('../db');
+const app = express();
 
 app.use(express.json());
 app.use(cors({
@@ -12,6 +21,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(cookieParser());
+app.set("trust proxy", 1);
 
 const authRoutes = require('./Routes/auth/auth');
 const monitorRoutes = require('./Routes/monitors/monitors');
@@ -26,17 +36,35 @@ app.use("/organization", organizationRoutes);
 app.use("/", dashboardRoutes);
 
 app.get("/health", (req, res) => {
-  res.json({ status: "ok", time: new Date().toISOString() });
+  const dbState = mongoose.connection.readyState;
+  const states = {
+    0: "disconnected",
+    1: "connected",
+    2: "connecting",
+    3: "disconnecting",
+  };
+  if (dbState !== 1) {
+    return res.status(500).json({
+      status: "error",
+      database: states[dbState],
+      time: new Date().toISOString(),
+    });
+  }
+  res.json({
+    status: "ok",
+    database: "connected",
+    uptime_seconds: process.uptime(),
+    time: new Date().toISOString(),
+  });
 });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   console.error(err);
   res.status(500).json({ error: "Internal server error" });
 });
 
+
 const PORT = process.env.PORT || 8080;
-
-
 async function startServer() {
   try {
     await connectDB();

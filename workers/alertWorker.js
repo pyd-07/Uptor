@@ -1,6 +1,15 @@
+require("dotenv").config({ path: "../.env" })
+process.on("unhandledRejection", (err) => {
+    console.error("[FATAL] Unhandled Rejection:", err)
+})
+
+process.on("uncaughtException", (err) => {
+    console.error("[FATAL] Uncaught Exception:", err)
+    process.exit(1)
+})
+
 const pLimit = require('p-limit').default;
 const connectDB = require('../db');
-require("dotenv").config({ path: "../.env" })
 const { Alert } = require('../backend/Models/Alert')
 const {Monitor} = require('../backend/Models/Monitor')
 const notifyMail = require('../services/alertService')

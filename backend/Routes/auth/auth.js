@@ -2,12 +2,23 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const rateLimit = require("express-rate-limit");
+
 const {User} = require('../../Models/User')
 const {Organization} = require('../../Models/Organization');
 const {auth} = require('../../Middlewares/auth')
+
 const SECRET = process.env.SECRET
 
-router.post("/login", async (req, res) => {
+
+const authLimiter = rateLimit({
+    windowMs: 15*60*1000,
+    max: 100,
+    message:"Too many attempts. Please try again later"
+})
+
+
+router.post("/login", authLimiter, async (req, res) => {
     const { email, password } = req.body
 
     if (!email || !password) {
@@ -49,7 +60,7 @@ router.post("/login", async (req, res) => {
 })
 
 
-router.post('/register', async (req, res) => {
+router.post('/register', authLimiter, async (req, res) => {
     const {name, email, password, org_name, org_mail} = req.body
 
     if (!email || !password || !org_name){
