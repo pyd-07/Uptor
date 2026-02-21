@@ -105,7 +105,6 @@ export function MonitorsTable({ monitors, setMonitors }
                             const status = getStatusMeta(monitor);
                             const isToggling = togglingId === monitor._id;
                             const isDeleting = deletingId === monitor._id;
-                            const isBusy = Boolean(togglingId || deletingId);
 
                             return (
                                 <tr
@@ -134,7 +133,7 @@ export function MonitorsTable({ monitors, setMonitors }
                                     </td>
 
                                     <td className={`px-6 py-4 text-left text-sm ${formatResponseStatusCode(monitor.status_code)}`}>
-                                        {monitor.status_code}
+                                        {monitor.status_code ? monitor.status_code : "—"}
                                     </td>
 
                                     <td className={`px-6 py-4 text-left text-sm ${formatResponseTimeColor(monitor.response_time_ms, monitor.is_active)}`}>
@@ -157,7 +156,7 @@ export function MonitorsTable({ monitors, setMonitors }
                                         <button
                                             type={"button"}
                                             onClick={()=>toggleActivity(monitor._id)}
-                                            disabled={isBusy}
+                                            disabled={togglingId === monitor._id}
                                             className="inline-flex w-full items-center justify-center gap-1.5 rounded-3xl border border-white/15 bg-slate-800/70 px-2 py-1 text-white transition hover:bg-slate-700/80 disabled:cursor-not-allowed disabled:opacity-60" >
 
                                             {isToggling ? "Updating..." : monitor.is_active ? "Pause" : "Resume"}
@@ -167,7 +166,7 @@ export function MonitorsTable({ monitors, setMonitors }
                                     <td className="px-6 py-4 text-sm text-white hover:bg-slate-800/50">
                                         <button
                                             onClick={()=>handleDelete(monitor._id)}
-                                            disabled={isBusy}
+                                            disabled={deletingId === monitor._id}
                                             className="inline-flex w-full items-center justify-center gap-1.5 rounded-3xl border border-red-500/30 bg-red-500/15 px-2 py-1 text-red-200 transition hover:bg-red-500/25 disabled:cursor-not-allowed disabled:opacity-60"
 
                                         >

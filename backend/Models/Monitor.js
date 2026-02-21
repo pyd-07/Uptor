@@ -23,7 +23,7 @@ const monitorSchema = new mongoose.Schema(
     },
     status_code: {
       type: Number,
-      default: 000
+      default: 0
     },
     last_checked_at: { type: Date, default: null },
     next_check_at: { type: Date, default: () => new Date(Date.now() + 300 * 1000) },

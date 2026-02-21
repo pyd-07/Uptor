@@ -1,4 +1,5 @@
 import { MonitorFormat } from "@/lib/monitors";
+import {formatTimestamp, formatResponseTimeColor, formatResponseStatusCode} from "@/lib/utils";
 import { Activity, Clock3, ExternalLink, Timer } from "lucide-react";
 
 type MonitorCardProps = {
@@ -50,14 +51,22 @@ function MonitorCard({ monitor, onToggleActivity, onDelete, isToggling = false, 
                     <div className="text-slate-400 text-xs mb-1 flex items-center gap-1">
                         <Clock3 className="size-3.5" /> Last Checked
                     </div>
-                    <div className="text-slate-200">{(monitor.last_checked_at)}</div>
+                    <div className="text-slate-200">{formatTimestamp(monitor.last_checked_at)}</div>
                 </div>
                 <div>
                     <div className="text-slate-400 text-xs mb-1 flex items-center gap-1">
                         <Activity className="size-3.5" /> Response
                     </div>
-                    <div className="text-slate-200">
+                    <div className={`text-sm ${formatResponseTimeColor(monitor.response_time_ms, monitor.is_active)}`}>
                         {monitor.response_time_ms ? `${monitor.response_time_ms} ms` : "—"}
+                    </div>
+                </div>
+                <div>
+                    <div className="text-slate-400 text-xs mb-1 flex items-center gap-1">
+                        <Activity className="size-3.5" /> Status Code
+                    </div>
+                    <div className={`text-sm ${formatResponseStatusCode(monitor.status_code)}`}>
+                        {monitor.status_code ? `${monitor.status_code} ms` : "—"}
                     </div>
                 </div>
                 <div>
