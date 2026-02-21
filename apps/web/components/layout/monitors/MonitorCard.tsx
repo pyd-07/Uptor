@@ -66,7 +66,7 @@ function MonitorCard({ monitor, onToggleActivity, onDelete, isToggling = false, 
                         <Activity className="size-3.5" /> Status Code
                     </div>
                     <div className={`text-sm ${formatResponseStatusCode(monitor.status_code)}`}>
-                        {monitor.status_code ? `${monitor.status_code} ms` : "—"}
+                        {monitor.status_code ? `${monitor.status_code}` : "—"}
                     </div>
                 </div>
                 <div>
