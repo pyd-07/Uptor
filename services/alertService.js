@@ -50,7 +50,7 @@ function downMessage(monitor) {
         </tr>
         <tr>
           <td style="color:#9ca3af;">Checked At</td>
-          <td>${new Date(monitor.last_checked_at).toLocaleString()}</td>
+          <td>${new Date(monitor.last_checked_at).toUTCString()}</td>
         </tr>
       </table>
 
@@ -102,7 +102,7 @@ function recoveryMessage(monitor) {
         </tr>
         <tr>
           <td style="color:#9ca3af;">Checked At</td>
-          <td>${new Date(monitor.last_checked_at).toLocaleString()}</td>
+          <td>${new Date(monitor.last_checked_at).toUTCString()}</td>
         </tr>
       </table>
 
@@ -154,7 +154,7 @@ function unknownMessage(monitor) {
         </tr>
         <tr>
           <td style="color:#9ca3af;">Checked At</td>
-          <td>${new Date(monitor.last_checked_at).toLocaleString()}</td>
+          <td>${new Date(monitor.last_checked_at).toUTCString()}</td>
         </tr>
       </table>
 
