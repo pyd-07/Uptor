@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/api";
+import { checkAuth} from "@/lib/checkAuth";
 
 import {
   RawAlert,

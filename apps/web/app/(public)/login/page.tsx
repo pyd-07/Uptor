@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Spinner } from "@/components/ui/spinner"
 import Image from "next/image";
 import Link from "next/link";
 import { api } from '@/lib/api';
@@ -139,8 +140,8 @@ export function CardDemo() {
                         </div>
                         )
                     }
-                    <Button type="submit" className="w-full hover:bg-slate-700">
-                        Log In
+                    <Button type="submit" className="w-full hover:bg-slate-700" disabled={loading}>
+                        {loading ? <Spinner /> : "Log In"}
                     </Button>
                     
                     <div className="text-xs text-muted-foreground mt-2">Or continue with</div>
