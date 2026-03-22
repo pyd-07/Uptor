@@ -111,29 +111,36 @@ router.delete('/:id', auth, async (req, res) => {
     }
 })
 
-router.get('/:id/checks', auth, async (req, res) => {
+
+router.get("/:id/stats", auth, async (req, res) => {
     const id = req.params.id
     const org_id = req.org_id
-    let limit = parseInt(req.query.limit)
-    if (!limit || limit < 10 || limit > 100) {
-        limit = 50
-    }
-    try {
+    try{
+        const limit = req.query.limit || 100
         const monitor = await Monitor.findById(id)
-        if (!monitor || monitor.organizationId.toString() !== org_id) {
-            return res.status(404).json({ message: "Monitor not found" })
+        if (!monitor){
+            return res.status(404).json({
+                    message: "Monitor Not Found"
+                })
         }
-        const checks = await MonitorCheck.find({ monitorId: id })
-            .sort({checked_at:-1})
+        if(monitor.organizationId.toString() !== org_id){
+            return res.status(404).json({
+                    message: "Monitor Not Found"
+                })
+        }
+        
+        const checks = await MonitorCheck.find({monitorId: id})
+            .sort({checked_at: -1})
             .limit(limit)
             .select("status response_time_ms status_code checked_at");
-    
+        
         return res.status(200).json(checks)
     } catch (error) {
-        res.status(500).json({
-            error:error.message
+        return res.status(500).json({
+            error: error.message
         })
     }
+    
 })
 
 module.exports = router
