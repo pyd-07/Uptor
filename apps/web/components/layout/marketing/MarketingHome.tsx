@@ -18,7 +18,7 @@ const featureItems = [
   {
     title: "Actionable Alerts",
     description:
-      "Receive downtime and recovery signals through your configured notification channels.",
+      "Receive downtime and recovery signals through email.",
     icon: BellRing,
   },
 ];
@@ -27,6 +27,7 @@ const workflowItems = [
   "Add your API or website endpoints as monitors.",
   "Uptor checks status and response time on schedule.",
   "Incidents and recoveries are logged in one timeline.",
+  "Now added graphs for tracking upto last 100 checks."
 ];
 
 export default function MarketingHome() {
@@ -47,7 +48,7 @@ export default function MarketingHome() {
               </h1>
               <p className="max-w-2xl text-sm sm:text-base text-slate-300">
                 Uptor gives engineering teams live uptime monitoring, latency
-                insights, and clear incident history without noisy dashboards.
+                insights with graphs, and clear incident history without noisy dashboards.
               </p>
             </div>
 
@@ -79,7 +80,7 @@ export default function MarketingHome() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <MetricTile label="Checks Running" value="24/7" />
           <MetricTile label="Detection Events" value="< 1m" />
-          <MetricTile label="Single Source View" value="1 dashboard" />
+          <MetricTile label="Single Source View with graphs" value="1 dashboard" />
         </div>
 
         <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -126,7 +127,7 @@ export default function MarketingHome() {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-cyan-300/20 bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950 p-6 sm:p-8">
+        <section className="rounded-3xl border border-cyan-300/20 bg-linear-to-r from-slate-900 via-slate-900 to-cyan-950 p-6 sm:p-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="space-y-2">
               <h4 className="text-2xl font-semibold">Start monitoring in minutes</h4>

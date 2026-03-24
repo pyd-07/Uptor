@@ -27,7 +27,14 @@ function MonitorCard({ monitor, onToggleActivity, onDelete, isToggling = false, 
         <div className="glass-card rounded-2xl p-4 sm:p-5 border border-white/10">
             <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="min-w-0 flex-1">
-                    <div className="font-semibold text-white mb-1.5 truncate">{monitor.name}</div>
+                    <div className="font-semibold text-white mb-1.5 truncate">
+                        <a
+                            href={`/monitors/${monitor._id}`}
+                            className="font-medium text-gray-300"
+                        >
+                            {monitor.name}
+                        </a>
+                    </div>
                     <div className="flex items-center gap-1.5 text-sm text-slate-300 min-w-0">
                         <a
                             href={monitor.url}

@@ -85,6 +85,7 @@ router.patch('/:id', auth, async (req, res) => {
 router.delete('/:id', auth, async (req, res) => {
     const org_id = req.org_id
     const id = req.params.id
+    const role = req.role
     try {
         const monitor = await Monitor.findById(id)
         if(!monitor){
@@ -97,6 +98,12 @@ router.delete('/:id', auth, async (req, res) => {
                 message: "Monitor Not Found"
             })
         }
+        if (role !== "Owner") {
+            return res.status(403).json({
+                message: "Unauthorized"
+            })
+        }
+
         await Monitor.findByIdAndDelete(id)
         await Organization.findByIdAndUpdate(org_id, {
             $inc: { used_monitors: -1 }

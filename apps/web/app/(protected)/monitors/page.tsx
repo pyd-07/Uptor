@@ -55,7 +55,7 @@ export default function MonitorPage() {
                 <Image src={"/streetlights.png"} alt={"Streetlights"} width={48} height={12}/>
             </header>
 
-            <div className="min-h-[400px] overflow-y-auto no-scrollbar">
+            <div className="min-h-[420px] overflow-y-auto no-scrollbar py-6">
                 {loading && <LoadingState />}
                 {error && <ErrorState message={error} />}
                 {!loading && !error && stats?.total === 0 && <EmptyState />}

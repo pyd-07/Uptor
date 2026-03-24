@@ -138,7 +138,7 @@ function DashboardContent({stats, monitors}: { stats: PageStats, monitors: Monit
                             Monitors Status
                         </div>
                         <div className="text-xs sm:text-sm text-slate-300">
-                            Live monitor statuses, endpoint response times, and recent checks.
+                            Click on any monitor's name to view detailed stats and graphs.
                         </div>
                     </div>
                     <div className="flex items-center gap-2 text-xs sm:text-sm">

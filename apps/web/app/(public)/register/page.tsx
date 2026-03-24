@@ -66,7 +66,6 @@ export function CardDemo() {
                 } else {
                     setError("Something went wrong.")
                 }
-                console.error(error)
             } finally {
                 setLoading(false)
             }

@@ -11,12 +11,13 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+require("dotenv").config({ path: "../.env" })
 const connectDB = require('../db');
 const app = express();
 app.set("trust proxy", 1);
 
 app.use(cors({
-  origin: "https://uptor.vercel.app",
+  origin: process.env.NODE_ENV === "production" ? "https://uptor.vercel.app" : "http://localhost:3000",
   credentials: true
 }));
 app.use(express.json());

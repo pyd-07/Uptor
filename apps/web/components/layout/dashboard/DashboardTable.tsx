@@ -64,7 +64,11 @@ export default function DashboardTable({ monitors }: { monitors: DashboardMonito
                 ) : (
                     monitors.map((monitor, index) => <TableRow key={monitor._id} className={'bg-transparent'}>
                         <TableCell className="font-medium text-gray-100 px-4 sm:px-6">
-                            {monitor.name}
+                            {/* {monitor.name} */}
+                            <a 
+                                href={`/monitors/${monitor._id}`}>
+                                {monitor.name}
+                            </a>
                         </TableCell>
 
                         <TableCell>

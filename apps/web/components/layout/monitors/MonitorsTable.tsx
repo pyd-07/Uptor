@@ -112,9 +112,12 @@ export function MonitorsTable({ monitors, setMonitors }
                                     className="border-b border-white/5 hover:bg-white/[0.02] transition-colors glass-card-hover"
                                 >
                                     <td className="px-6 py-4">
-                                        <div className="font-medium text-gray-300">
+                                        <a
+                                            href={`/monitors/${monitor._id}`}
+                                            className="font-medium text-gray-300"
+                                        >
                                             {monitor.name}
-                                        </div>
+                                        </a>
                                         <a
                                             href={monitor.url}
                                             target="_blank"

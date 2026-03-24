@@ -1,6 +1,8 @@
 "use client"
 
 import Image from "next/image"
+import MonitorGraph from "@/components/layout/monitors/MonitorGraph"
+import { ChartData } from "@/components/layout/monitors/MonitorGraph"
 import { api } from "@/lib/api"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -8,15 +10,16 @@ import { useEffect, useState } from "react"
 export default function MonitorStatsPage(){
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
-    const [GraphStats, setGraphStats] = useState([])
+    const [GraphStats, setGraphStats] = useState<ChartData | undefined>()
     const path = usePathname()
-    const id = path.split('/')[1]
+    const id = path.split('/')[2]
     
     useEffect(()=>{
         const fetchData = async ()=>{
             try{
                 const res = await api.get(`/monitors/${id}/stats`)
                 setGraphStats(res.data)
+                console.log(GraphStats)
             } catch(error) {
                 setError("Failed to load stats")
             } finally {
@@ -42,6 +45,9 @@ export default function MonitorStatsPage(){
 
                 <Image src={"/streetlights.png"} alt={"Streetlights"} width={48} height={12}/>
             </header>
+            <div>
+                <MonitorGraph chartData={GraphStats} />
+            </div>
         </>
     )
 }

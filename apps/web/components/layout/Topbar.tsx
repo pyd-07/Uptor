@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function Topbar() {
     return (
-        <div className="fixed top-0 left-0 z-40 w-full py-3">
+        <div className="relative top-0 left-0 z-40 w-full py-3">
             <div className="ml-4 flex min-w-0 items-center justify-between gap-2 sm:gap-3">
                 <MyMessage />
                 <More />

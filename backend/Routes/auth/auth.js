@@ -93,7 +93,7 @@ router.post('/register', authLimiter, async (req, res) => {
             await user.save()
         }else{
             const org = new Organization({
-                name:org_name,
+                name: org_name,
                 mail: org_mail
             })
             await org.save()
