@@ -94,7 +94,7 @@ export default function AlertsPage() {
                     return (
                     <tr
                       key={alert._id ?? `alert-${index}`}
-                      className="border-b border-white/5 hover:bg-white/[0.02] glass-card-hover"
+                      className="border-b border-white/5 hover:bg-white/2 glass-card-hover"
                     >
                       <td className="px-6 py-4">{alertBadge(alert.type)}</td>
                       <td className="px-6 py-4">

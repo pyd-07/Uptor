@@ -38,7 +38,7 @@ function MonitorCard({ monitor, onToggleActivity, onDelete, isToggling = false, 
                         >
                             {monitor.url}
                         </a>
-                        <ExternalLink className="size-3.5 flex-shrink-0 text-slate-400" />
+                        <ExternalLink className="size-3.5 shrink-0 text-slate-400" />
                     </div>
                 </div>
                 <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusClass}`}>

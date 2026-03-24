@@ -1,14 +1,16 @@
 "use client"
 
 import {useState, useEffect} from 'react';
+import LoadingState from '@/components/statecards/LoadingState';
+import EmptyState from '@/components/statecards/EmptyState';
+import ErrorState from '@/components/statecards/ErrorState';
 import DashboardCard from "@/components/layout/dashboard/DashboardCard";
 import DashboardTable from "@/components/layout/dashboard/DashboardTable";
 import {api} from "@/lib/api";
 import { buildMonitorStats, MonitorFormat } from '@/lib/monitors';
 import { PageStats } from '@/lib/monitors';
 import {formatTimestamp} from "@/lib/utils";
-import Link from 'next/link';
-import { Activity, XCircle, Gauge, PauseCircle, Plus, RefreshCcw } from 'lucide-react';
+import { Activity, XCircle, Gauge, PauseCircle, RefreshCcw } from 'lucide-react';
 
 
 export default function Page() {
@@ -78,7 +80,7 @@ export default function Page() {
 
                 <div className="min-h-[420px]">
                     {loading && <LoadingState />}
-                    {error && <ErrorState message={error} />}
+                    {error && <ErrorState message={error}/>}
                     {!loading && !error && stats?.total === 0 && <EmptyState />}
                     {!loading && !error && stats && stats.total > 0 && (
                         <DashboardContent stats={stats} monitors={monitorsArr} />
@@ -154,46 +156,3 @@ function DashboardContent({stats, monitors}: { stats: PageStats, monitors: Monit
     )
 }
 
-function LoadingState() {
-    return (
-        <div className="flex items-center justify-center h-64 text-gray-400">
-            Loading Dashboard...
-        </div>
-    )
-}
-
-function ErrorState({ message }: { message: string }) {
-    return (
-        <div className="flex flex-col items-center justify-center h-64 text-center space-y-3">
-            <div className="text-red-500 text-lg font-semibold">
-                Something went wrong
-            </div>
-            <div className="text-sm text-gray-400">
-                {message}
-            </div>
-        </div>
-    )
-}
-
-function EmptyState() {
-    return (
-        <div className="flex flex-col items-center justify-center h-72 text-center space-y-4 px-6">
-            <div className="inline-flex size-12 items-center justify-center rounded-full bg-indigo-500/15 border border-indigo-400/30">
-                <Activity className="size-5 text-indigo-300" />
-            </div>
-            <div className="text-lg font-semibold text-white">
-                No monitors yet
-            </div>
-            <div className="text-sm text-gray-400">
-                Add your first monitor to start tracking uptime.
-            </div>
-            <Link
-                href={'/monitors/new'}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition"
-            >
-                <Plus className="size-4" />
-                Add Monitor
-            </Link>
-        </div>
-    )
-}

@@ -68,7 +68,7 @@ router.patch('/:id', auth, async (req, res) => {
             return res.status(404).json({ message: "Monitor not found" })
         }
         if (monitor.organizationId.toString() !== org_id) {
-            return res.status(403).json({ message: "You are not permitted to modify this monitor" })
+            return res.status(404).json({ message: "Monitor not found" })
         }
         monitor.is_active = !monitor.is_active
         const updated_monitor = await monitor.save()
@@ -94,7 +94,7 @@ router.delete('/:id', auth, async (req, res) => {
         }
         if (monitor.organizationId.toString() !== org_id) {
             return res.status(403).json({
-                message: "You are not permitted to delete this monitor"
+                message: "Monitor Not Found"
             })
         }
         await Monitor.findByIdAndDelete(id)
@@ -116,7 +116,7 @@ router.get("/:id/stats", auth, async (req, res) => {
     const id = req.params.id
     const org_id = req.org_id
     try{
-        const limit = req.query.limit || 100
+        const limit = req.query.limit ? req.query.limit : 100;
         const monitor = await Monitor.findById(id)
         if (!monitor){
             return res.status(404).json({
