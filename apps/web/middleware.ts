@@ -6,7 +6,7 @@ import type { NextRequest } from 'next/server';
 const publicRoutes = ["/about", "/login", "/register"]
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('auth-token')?.value;
+  const token = request.cookies.get('auth_token');
   const { pathname } = request.nextUrl;
 
   if (pathname === '/login') {
